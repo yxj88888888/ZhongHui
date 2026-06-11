@@ -1,5 +1,7 @@
 ﻿/* ===== 鍩虹鏍峰紡 ===== */
 :root {
+  --display-aspect-ratio: 550 / 950;
+  --display-canvas-width: min(100vw, 57.8947368421vh);
   --bg-primary: #0f1117;
   --bg-secondary: #161822;
   --bg-card: #1a1d2e;
@@ -16,7 +18,16 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html {
+  min-height: 100%;
+  background: #090b11;
+}
+
 body {
+  width: var(--display-canvas-width);
+  min-height: 100vh;
+  margin: 0 auto !important;
+  overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -351,7 +362,7 @@ body {
   .price-label { font-size: 21px; }
   #chart-gold-main { height: 380px; }
 }
-@media (max-width: 768px) {
+@media (max-width: 768px), (orientation: portrait), (min-aspect-ratio: 550 / 950) {
   .header-inner {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -430,9 +441,9 @@ body {
   .price-change { font-size: 18px; gap: 6px; }
   .price-unit { font-size: 30px; }
   .chart-section {
-    width: calc(100vw - 8px);
-    margin-left: calc(50% - 50vw + 4px);
-    margin-right: calc(50% - 50vw + 4px);
+    width: calc(100% + 48px);
+    margin-left: -24px;
+    margin-right: -24px;
     padding: 8px;
   }
   .chart-header { margin-bottom: 8px; }
@@ -498,9 +509,9 @@ body {
   .price-change { font-size: 14px; gap: 5px; }
   .price-unit { font-size: 24px; }
   .chart-section {
-    width: calc(100vw - 4px);
-    margin-left: calc(50% - 50vw + 2px);
-    margin-right: calc(50% - 50vw + 2px);
+    width: calc(100% + 12px);
+    margin-left: -6px;
+    margin-right: -6px;
     padding: 6px;
   }
   .chart-main-wrap { margin: 0 -4px -4px; }

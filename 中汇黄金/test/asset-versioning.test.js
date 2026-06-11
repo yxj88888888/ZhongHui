@@ -3,7 +3,7 @@ const path = require('path');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8');
 
-if (!html.includes('css/style.css?v=ychartshort-20260606')) {
+if (!html.includes('css/style.css?v=display550x950-final-20260611')) {
   throw new Error('Expected stylesheet URL to be versioned so price-meta layout changes refresh in the browser');
 }
 

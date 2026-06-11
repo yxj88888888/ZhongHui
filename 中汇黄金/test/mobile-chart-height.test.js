@@ -3,7 +3,7 @@ const path = require('path');
 
 const css = fs.readFileSync(path.join(__dirname, '..', 'public', 'css', 'style.css'), 'utf8');
 
-const mobileBlock = css.match(/@media \(max-width: 768px\) \{([\s\S]*?)\n\}/)?.[1] || '';
+const mobileBlock = css.match(/@media \(max-width: 768px\)[^{]*\{([\s\S]*?)\n\}/)?.[1] || '';
 if (!/#chart-gold-main\s*\{\s*height:\s*300px\s*;?\s*\}/.test(mobileBlock)) {
   throw new Error('Expected mobile main chart height to shorten to 300px');
 }
