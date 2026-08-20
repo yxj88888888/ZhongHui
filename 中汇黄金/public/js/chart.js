@@ -1,11 +1,11 @@
 /* ===== ECharts chart management ===== */
 
 const chartTheme = {
-  bg: '#10141c',
-  text: '#a7b1c2',
-  grid: 'rgba(180, 198, 226, 0.13)',
-  red: '#ff525d',
-  gold: '#ffd84d',
+  bg: '#fffdf8',
+  text: '#75685a',
+  grid: 'rgba(198, 154, 75, 0.2)',
+  red: '#c69a4b',
+  gold: '#c69a4b',
 };
 
 function formatTooltipTime(value) {
@@ -16,10 +16,10 @@ function formatTooltipTime(value) {
 
 function commonTooltip() {
   return {
-    backgroundColor: 'rgba(14, 18, 27, 0.98)',
-    borderColor: 'rgba(255, 216, 77, 0.44)',
-    textStyle: { color: '#eef3ff', fontSize: 12 },
-    extraCssText: 'border-radius:4px;box-shadow:0 8px 26px rgba(0,0,0,0.55);'
+    backgroundColor: 'rgba(255, 253, 248, 0.98)',
+    borderColor: 'rgba(198, 154, 75, 0.45)',
+    textStyle: { color: '#342c24', fontSize: 12 },
+    extraCssText: 'border-radius:8px;box-shadow:0 8px 24px rgba(92,69,38,0.16);'
   };
 }
 
@@ -29,10 +29,10 @@ function terminalPriceSeriesStyle() {
   return {
     smooth: false,
     symbol: 'none',
-    lineStyle: { width: 1.9, color: chartTheme.red, opacity: 0.96 },
+    lineStyle: { width: 2.4, color: chartTheme.red, opacity: 0.96 },
     emphasis: {
       focus: 'series',
-      lineStyle: { width: 2.8, color: '#ff6771' },
+      lineStyle: { width: 3.1, color: '#9c7635' },
     },
     areaStyle: {
       color: {
@@ -42,9 +42,9 @@ function terminalPriceSeriesStyle() {
         x2: 0,
         y2: 1,
         colorStops: [
-          { offset: 0, color: 'rgba(255, 82, 93, 0.18)' },
-          { offset: 0.74, color: 'rgba(255, 82, 93, 0.035)' },
-          { offset: 1, color: 'rgba(255, 82, 93, 0)' },
+          { offset: 0, color: 'rgba(198, 154, 75, 0.23)' },
+          { offset: 0.74, color: 'rgba(198, 154, 75, 0.05)' },
+          { offset: 1, color: 'rgba(198, 154, 75, 0)' },
         ],
       },
     },
@@ -73,23 +73,23 @@ function buildCurrentPriceAnnotations(pricePoints) {
       symbolSize: 9,
       itemStyle: {
         color: chartTheme.gold,
-        borderColor: '#ffffff',
+        borderColor: '#fffaf0',
         borderWidth: 2,
         shadowBlur: 10,
-        shadowColor: 'rgba(255, 216, 77, 0.58)',
+        shadowColor: 'rgba(198, 154, 75, 0.42)',
       },
       label: {
         show: true,
-        color: '#11151f',
-        backgroundColor: chartTheme.gold,
-        borderColor: 'rgba(255,255,255,0.72)',
+        color: '#342c24',
+        backgroundColor: '#f5e6c8',
+        borderColor: 'rgba(198,154,75,0.5)',
         borderWidth: 1,
         borderRadius: 3,
         padding: [4, 7],
         fontSize: 12,
         fontWeight: 'bold',
         distance: 10,
-        position: 'top',
+        position: 'bottom',
         formatter: () => `当前价 ${currentText}`,
       },
       data: [{
@@ -102,17 +102,12 @@ function buildCurrentPriceAnnotations(pricePoints) {
       silent: true,
       symbol: 'none',
       lineStyle: {
-        color: 'rgba(255, 216, 77, 0.7)',
+        color: 'rgba(156, 118, 53, 0.68)',
         width: 1.25,
         type: 'dashed',
       },
       label: {
-        show: true,
-        position: 'insideEndTop',
-        color: chartTheme.gold,
-        fontSize: 11,
-        fontWeight: 'bold',
-        formatter: () => `当前价 ${currentText}`,
+        show: false,
       },
       data: [{ name: 'current-price-line', yAxis: currentPrice }],
     },
@@ -130,7 +125,7 @@ function initGoldMainChart(dom) {
       axisPointer: {
         type: 'line',
         lineStyle: {
-          color: 'rgba(220, 230, 246, 0.46)',
+          color: 'rgba(117, 104, 90, 0.4)',
           width: 1,
           type: 'dashed',
           opacity: 0.42,
@@ -153,10 +148,7 @@ function initGoldMainChart(dom) {
       axisLine: { lineStyle: { color: chartTheme.grid } },
       axisLabel: { color: chartTheme.text, fontSize: 10, margin: 9 },
       axisTick: { show: false },
-      splitLine: {
-        show: true,
-        lineStyle: { color: 'rgba(180, 198, 226, 0.08)', width: 1, type: 'dotted' },
-      },
+      splitLine: { show: true, lineStyle: { color: chartTheme.grid, width: 1, type: 'dotted' } },
     },
     yAxis: {
       type: 'value',

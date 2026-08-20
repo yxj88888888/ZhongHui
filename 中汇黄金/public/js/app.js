@@ -8,6 +8,8 @@ let todayHigh = null;
 let todayLow = null;
 let prevSalePrice = null;
 let prevBuybackPrice = null;
+const LIVE_HISTORY_LIMIT = 5000;
+const LIVE_FLAT_SAMPLE_MS = 60000;
 
 function formatTimeShort(ts) {
   const d = new Date(ts);
@@ -23,8 +25,7 @@ function formatDate(ts) {
 function formatHeaderDateTime() {
   const now = new Date();
   const days = ['日', '一', '二', '三', '四', '五', '六'];
-  return now.getFullYear() + '年' +
-    (now.getMonth() + 1) + '月' +
+  return (now.getMonth() + 1) + '月' +
     now.getDate() + '日 星期' +
     days[now.getDay()] + ' ' +
     now.getHours().toString().padStart(2, '0') + ':' +
@@ -58,10 +59,171 @@ function getPriceAxisBounds(pricePoints) {
   if (prices.length === 0) return { min: null, max: null, interval: null };
 
   const latest = prices[prices.length - 1];
-  const halfSpan = 10;
-  const rawMin = latest - halfSpan;
-  const min = Math.floor(rawMin / 5) * 5;
-  return { min, max: min + 20, interval: 5 };
+  const tick = 5;
+  const minimumSpan = 20;
+  const dataMin = Math.min(...prices);
+  const dataMax = Math.max(...prices);
+  let min = Math.floor((dataMin - tick) / tick) * tick;
+  let max = Math.ceil((dataMax + tick) / tick) * tick;
+
+  if (max - min < minimumSpan) {
+    min = Math.floor((latest - minimumSpan / 2) / tick) * tick;
+    max = min + minimumSpan;
+  }
+
+  const span = max - min;
+  const interval = Math.max(tick, Math.ceil((span / 4) / tick) * tick);
+  return { min, max, interval };
+}
+
+function parseGoldTimestamp(value) {
+  if (!value) return NaN;
+  if (typeof value === 'number') return value;
+
+  const text = String(value).trim();
+  const normalized = text.replace(/-/g, '/');
+  const parsed = Date.parse(normalized);
+  return Number.isFinite(parsed) ? parsed : NaN;
+}
+
+function normalizeGoldPoint(raw, fallbackTimestamp = Date.now(), options = {}) {
+  if (!raw) return null;
+
+  const sale = Number(raw.sale_price);
+  const buyback = Number(raw.buyback_price);
+  if (!Number.isFinite(sale) || !Number.isFinite(buyback)) return null;
+
+  const timestamp = options.preferFallbackTimestamp
+    ? fallbackTimestamp
+    : parseGoldTimestamp(raw.timestamp) ||
+      parseGoldTimestamp(raw.update_time) ||
+      parseGoldTimestamp(raw.time) ||
+      fallbackTimestamp;
+
+  return {
+    time: raw.time || raw.update_time ||
+      new Date(timestamp).toLocaleString('zh-CN', { hour12: false }),
+    sale_price: sale,
+    buyback_price: buyback,
+    timestamp,
+    synthetic_start: raw.synthetic_start === true,
+  };
+}
+
+function sameGoldPoint(a, b) {
+  return a &&
+    b &&
+    a.sale_price === b.sale_price &&
+    a.buyback_price === b.buyback_price;
+}
+
+function refreshFirstPrice() {
+  if (goldHistory.length === 0) return;
+  const earliest = goldHistory[0];
+  if (!firstPrice || Number(earliest.timestamp) < Number(firstPrice.timestamp || Infinity)) {
+    firstPrice = earliest;
+  }
+}
+
+function trimGoldHistory() {
+  if (goldHistory.length <= LIVE_HISTORY_LIMIT) return;
+
+  if (currentRange === 'today') {
+    const todayBounds = getTodayAxisBounds(goldHistory[0]?.timestamp || Date.now());
+    const visible = [];
+    const outside = [];
+
+    for (const point of goldHistory) {
+      if (point.timestamp >= todayBounds.min && point.timestamp <= todayBounds.max) {
+        visible.push(point);
+      } else {
+        outside.push(point);
+      }
+    }
+
+    const outsideLimit = Math.max(0, LIVE_HISTORY_LIMIT - visible.length);
+    const retainedOutside = outsideLimit > 0 ? outside.slice(-outsideLimit) : [];
+    goldHistory = [...retainedOutside, ...visible].sort((a, b) => a.timestamp - b.timestamp);
+    return;
+  }
+
+  goldHistory = goldHistory.slice(-LIVE_HISTORY_LIMIT);
+}
+
+function mergeGoldHistoryPoints(points) {
+  const normalized = (Array.isArray(points) ? points : [])
+    .map(point => normalizeGoldPoint(point))
+    .filter(Boolean);
+
+  if (normalized.length === 0) return false;
+
+  const sorted = [...goldHistory, ...normalized]
+    .filter(Boolean)
+    .sort((a, b) => a.timestamp - b.timestamp);
+
+  const merged = [];
+  for (const point of sorted) {
+    const last = merged[merged.length - 1];
+    if (
+      last &&
+      sameGoldPoint(last, point) &&
+      Math.abs(last.timestamp - point.timestamp) < 1000
+    ) {
+      merged[merged.length - 1] = point.timestamp >= last.timestamp ? point : last;
+    } else {
+      merged.push(point);
+    }
+  }
+
+  goldHistory = merged;
+  trimGoldHistory();
+  refreshFirstPrice();
+  return true;
+}
+
+function refreshTodayRange() {
+  if (currentRange !== 'today' || goldHistory.length === 0) return;
+
+  const todayBounds = getTodayAxisBounds(goldHistory[0]?.timestamp);
+  const prices = goldHistory
+    .filter(point => point.timestamp >= todayBounds.min && point.timestamp <= todayBounds.max)
+    .map(point => Number(point.sale_price))
+    .filter(Number.isFinite);
+
+  if (prices.length === 0) return;
+  todayHigh = Math.max(...prices);
+  todayLow = Math.min(...prices);
+}
+
+function recordLiveGoldPoint(rawPoint) {
+  const point = normalizeGoldPoint(rawPoint, Date.now(), { preferFallbackTimestamp: true });
+  if (!point) return false;
+  point.synthetic_start = false;
+
+  const last = goldHistory[goldHistory.length - 1];
+  if (!last) {
+    goldHistory.push(point);
+    refreshFirstPrice();
+    return true;
+  }
+
+  if (point.timestamp <= last.timestamp) {
+    return false;
+  }
+
+  if (sameGoldPoint(last, point)) {
+    if (goldHistory.length >= 2 && point.timestamp - last.timestamp < LIVE_FLAT_SAMPLE_MS) {
+      goldHistory[goldHistory.length - 1] = point;
+    } else {
+      goldHistory.push(point);
+    }
+  } else {
+    goldHistory.push(point);
+  }
+
+  trimGoldHistory();
+  refreshFirstPrice();
+  return true;
 }
 
 async function fetchGoldCurrent() {
@@ -70,7 +232,12 @@ async function fetchGoldCurrent() {
     const json = await resp.json();
     if (json.code === 1 && json.data) {
       currentGold = json.data;
+      const chartChanged = recordLiveGoldPoint(currentGold);
+      refreshTodayRange();
       updatePriceDisplay();
+      if (chartChanged && currentRange === 'today') {
+        updateMainChart();
+      }
     }
   } catch {
     // silent refresh failure
@@ -82,14 +249,9 @@ async function fetchGoldHistory() {
     const resp = await fetch('/api/gold/history?range=' + currentRange);
     const json = await resp.json();
     if (json.code === 1 && json.data.length > 0) {
-      goldHistory = json.data;
-      if (!firstPrice) firstPrice = json.data[0];
+      mergeGoldHistoryPoints(json.data);
 
-      if (currentRange === 'today') {
-        const prices = json.data.map(d => Number(d.sale_price)).filter(Number.isFinite);
-        todayHigh = Math.max(...prices);
-        todayLow = Math.min(...prices);
-      }
+      refreshTodayRange();
 
       updatePriceDisplay();
       updateMainChart();
@@ -155,6 +317,19 @@ function updatePriceDisplay() {
         `</span>` +
       `</span>`;
   }
+
+  const rangeInfo = document.getElementById('price-range-info');
+  if (rangeInfo && Number.isFinite(todayHigh) && Number.isFinite(todayLow)) {
+    rangeInfo.innerHTML =
+      `<span class="meta-line">` +
+        `<span class="meta-label">最高</span>` +
+        `<strong class="meta-value">${todayHigh.toFixed(2)}</strong>` +
+      `</span>` +
+      `<span class="meta-line">` +
+        `<span class="meta-label">最低</span>` +
+        `<strong class="meta-value">${todayLow.toFixed(2)}</strong>` +
+      `</span>`;
+  }
 }
 
 function updateMainChart() {
@@ -180,6 +355,7 @@ function updateMainChart() {
     chartDom.dataset.xMinTime = formatAxisTime(todayBounds.min);
     chartDom.dataset.xMaxTime = formatAxisTime(todayBounds.max);
     chartDom.dataset.ySpan = String(priceAxisBounds.max - priceAxisBounds.min);
+    chartDom.dataset.pointCount = String(pricePoints.length);
   }
 
   if (!chartGoldMain) initGoldMainChart(chartDom);

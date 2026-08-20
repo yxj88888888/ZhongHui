@@ -33,8 +33,8 @@ if (!option) {
   throw new Error('Expected chart initialization to set an ECharts option');
 }
 
-if (option.backgroundColor !== '#10141c') {
-  throw new Error('Expected a darker terminal-style chart background');
+if (option.backgroundColor !== '#fffdf8') {
+  throw new Error('Expected the light template chart background');
 }
 
 const tooltipPointer = option.tooltip.axisPointer || {};
@@ -57,8 +57,8 @@ if (series.smooth !== false) {
   throw new Error('Expected Bloomberg/Reuters-style unsmoothed price movement');
 }
 
-if (series.lineStyle.width < 1.8 || series.lineStyle.color !== '#ff525d') {
-  throw new Error('Expected a high-contrast terminal red price line');
+if (series.lineStyle.width < 2.2 || series.lineStyle.color !== '#c69a4b') {
+  throw new Error('Expected a clear gold price line on the light chart');
 }
 
 if (!series.emphasis?.lineStyle || series.emphasis.lineStyle.width < 2.6) {
@@ -66,12 +66,12 @@ if (!series.emphasis?.lineStyle || series.emphasis.lineStyle.width < 2.6) {
 }
 
 const annotations = sandbox.__annotations;
-if (annotations.markPoint.label.backgroundColor !== '#ffd84d') {
-  throw new Error('Expected current price label to use Bloomberg-like yellow emphasis');
+if (annotations.markPoint.label.backgroundColor !== '#f5e6c8') {
+  throw new Error('Expected current price label to use the light gold surface');
 }
 
-if (annotations.markLine.lineStyle.width < 1.2 || annotations.markLine.label.color !== '#ffd84d') {
-  throw new Error('Expected current price line and label to be prominent');
+if (annotations.markLine.lineStyle.width < 1.2 || annotations.markLine.label.show !== false) {
+  throw new Error('Expected current price line emphasis without a duplicate label');
 }
 
-console.log('terminal chart style uses high-contrast market-screen styling');
+console.log('chart style uses the light gold template while preserving market readability');

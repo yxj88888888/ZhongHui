@@ -62,8 +62,8 @@ if (updateSeries.smooth !== false) {
   throw new Error('Expected live chart updates to keep the terminal-style unsmoothed line');
 }
 
-if (updateSeries.lineStyle?.width < 1.8 || updateSeries.lineStyle?.color !== '#ff525d') {
-  throw new Error('Expected live chart updates to keep the high-contrast red line');
+if (updateSeries.lineStyle?.width < 2.2 || updateSeries.lineStyle?.color !== '#c69a4b') {
+  throw new Error('Expected live chart updates to keep the light-template gold line');
 }
 
 if (!updateSeries.areaStyle) {
@@ -77,5 +77,8 @@ if (!updateSeries.emphasis?.lineStyle || updateSeries.emphasis.lineStyle.width <
 if (!updateSeries.markPoint?.data?.[0] || !updateSeries.markLine?.data?.[0]) {
   throw new Error('Expected live chart updates to keep current-price annotations');
 }
+if (updateSeries.markPoint.label?.position !== 'bottom' || updateSeries.markLine.label?.show !== false) {
+  throw new Error('Expected live chart updates to show one current-price label below the line');
+}
 
-console.log('live chart updates preserve terminal chart styling');
+console.log('live chart updates preserve light gold chart styling');

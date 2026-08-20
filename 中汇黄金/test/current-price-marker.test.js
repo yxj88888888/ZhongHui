@@ -35,14 +35,17 @@ if (point.value !== '991.27') {
   throw new Error('Expected current-price mark point label value to be formatted to two decimals');
 }
 
+if (annotations.markPoint.label.position !== 'bottom') {
+  throw new Error('Expected the only current-price label to appear below the line');
+}
+
 const line = annotations.markLine.data[0];
 if (!line || line.yAxis !== 991.27) {
   throw new Error('Expected current-price mark line to track the latest price');
 }
 
-const lineLabel = annotations.markLine.label.formatter();
-if (!lineLabel.includes('991.27')) {
-  throw new Error('Expected current-price mark line label to show the current price');
+if (annotations.markLine.label.show !== false) {
+  throw new Error('Expected the current-price line label to stay hidden so only one price label is shown');
 }
 
 if (sandbox.__emptyAnnotations.markPoint.data.length !== 0 || sandbox.__emptyAnnotations.markLine.data.length !== 0) {
