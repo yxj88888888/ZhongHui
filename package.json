@@ -1,0 +1,11 @@
+{
+  "name": "zhonghui-edgeone",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test/cloud-function-gold.test.mjs"
+  },
+  "dependencies": {
+    "@edgeone/pages-blob": "latest"
+  }
+}
