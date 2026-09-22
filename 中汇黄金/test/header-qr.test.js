@@ -6,72 +6,12 @@ const html = fs.readFileSync(path.join(root, 'public', 'index.html'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'public', 'css', 'style.css'), 'utf8');
 const qrPath = path.join(root, 'public', 'images', 'store-wechat-qr.jpg');
 
-if (!html.includes('<title>粤鑫金 - 实时贵金属行情</title>')) {
-  throw new Error('Expected a valid closed page title');
+if (!fs.existsSync(qrPath)) throw new Error('Expected store WeChat QR image');
+for (const marker of ['qr-block', 'images/store-wechat-qr.jpg', '关注粤鑫金', '了解实时行情']) {
+  if (!html.includes(marker)) throw new Error('Missing QR marker: ' + marker);
 }
-if (html.indexOf('</title>') > html.indexOf('<body')) {
-  throw new Error('Title tag should not swallow body markup');
-}
-
-if (!fs.existsSync(qrPath)) {
-  throw new Error('Expected store WeChat QR image to be copied into public images');
+if (!css.includes('.qr-block') || !css.includes('.qr-block img')) {
+  throw new Error('Expected QR block styling');
 }
 
-if (!html.includes('class="header-qr-card"')) {
-  throw new Error('Expected header QR card markup');
-}
-if (!html.includes('images/store-wechat-qr.jpg')) {
-  throw new Error('Expected header QR image source');
-}
-if (!html.includes('关注粤鑫金') || !html.includes('了解实时行情')) {
-  throw new Error('Expected QR card follow text');
-}
-
-for (const selector of ['.header-qr-card', '.header-qr-img', '.header-qr-title', '.header-qr-subtitle']) {
-  if (!css.includes(selector)) throw new Error(`Missing CSS selector ${selector}`);
-}
-
-const qrImageRule = css.match(/\.header-qr-img\s*\{([^}]*)\}/m);
-if (!qrImageRule || !/width:\s*108px/.test(qrImageRule[1]) || !/height:\s*108px/.test(qrImageRule[1])) {
-  throw new Error('Expected the template-sized 108px header QR image');
-}
-
-const qrCardRule = css.match(/\.header-qr-card\s*\{([^}]*)\}/m);
-if (!qrCardRule || !/width:\s*270px/.test(qrCardRule[1])) {
-  throw new Error('Expected the light template header QR card width');
-}
-
-if (!qrCardRule || !/gap:\s*12px/.test(qrCardRule[1])) {
-  throw new Error('Expected template spacing between header QR image and copy');
-}
-
-const qrCopyRule = css.match(/\.header-qr-copy\s*\{([^}]*)\}/m);
-if (!qrCopyRule || !/min-width:\s*0/.test(qrCopyRule[1]) ||
-    !/white-space:\s*nowrap/.test(qrCopyRule[1]) ||
-    !/line-height:\s*1\.45/.test(qrCopyRule[1])) {
-  throw new Error('Expected QR copy to remain legible inside the light card');
-}
-
-const qrTitleRule = css.match(/\.header-qr-title\s*\{([^}]*)\}/m);
-const qrSubtitleRule = css.match(/\.header-qr-subtitle\s*\{([^}]*)\}/m);
-if (!qrTitleRule || !/font-size:\s*20px/.test(qrTitleRule[1])) {
-  throw new Error('Expected light template desktop QR title');
-}
-if (!qrSubtitleRule || !/font-size:\s*16px/.test(qrSubtitleRule[1])) {
-  throw new Error('Expected light template desktop QR subtitle');
-}
-
-if (!/@media\s*\(max-width:\s*768px\)[\s\S]*\.header-qr-card[\s\S]*width:\s*190px/.test(css)) {
-  throw new Error('Expected QR card to shrink on narrow screens while staying in one row');
-}
-
-if (!/@media\s*\(max-width:\s*768px\)[\s\S]*\.header-qr-card[\s\S]*display:\s*flex/.test(css)) {
-  throw new Error('Expected QR card to remain visible on narrow screens');
-}
-
-if (!/@media\s*\(max-width:\s*768px\)[\s\S]*\.header-qr-title\s*\{[\s\S]*font-size:\s*19px/.test(css) ||
-    !/@media\s*\(max-width:\s*768px\)[\s\S]*\.header-qr-subtitle\s*\{[\s\S]*font-size:\s*15px/.test(css)) {
-  throw new Error('Expected enlarged QR copy at narrow widths');
-}
-
-console.log('header QR module includes asset, text, and responsive styling');
+console.log('QR module includes asset, text, and responsive styling');

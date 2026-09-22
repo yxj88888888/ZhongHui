@@ -1,382 +1,151 @@
 :root {
-  --paper: #f7f2e8;
-  --surface: #fffdf8;
-  --surface-gold: #f5e6c8;
-  --gold-primary: #c69a4b;
-  --gold-light: #d9b96f;
-  --gold-deep: #9c7635;
-  --ink: #342c24;
-  --text-primary: #342c24;
-  --text-secondary: #75685a;
-  --text-muted: #8b7d6d;
-  --red-price: #c94a3e;
-  --red-up: #c94a3e;
-  --green-down: #3d8a62;
-  --line: #e7dcc9;
-  --border-color: rgba(198, 154, 75, 0.27);
+  --board-brown: #cf9f79;
+  --board-brown-deep: #a87450;
+  --board-ink: #35251f;
+  --board-muted: #90786b;
+  --board-line: #e8d9ca;
+  --board-red: #c80000;
+  --board-recycle: #7f4b37;
+  --board-paper: #fffdf9;
+  --board-shadow: 0 24px 80px rgba(82, 48, 31, .2);
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; }
 body {
-  background: #ded8cc;
-  color: var(--ink);
-  font-family: "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  background: var(--board-brown);
+  color: var(--board-ink);
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-.screen {
-  position: relative;
-  width: min(1080px, 100%);
+.gold-price-board {
   min-height: 100vh;
+  padding: clamp(36px, 8vh, 108px) 20px 40px;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(255, 246, 221, .25), transparent 24%),
+    radial-gradient(circle at 94% 82%, rgba(122, 72, 47, .18), transparent 28%),
+    var(--board-brown);
+}
+
+.board-shell {
+  position: relative;
+  width: min(920px, 100%);
   margin: 0 auto;
-  overflow: hidden;
-  padding: 34px 46px 32px;
-  background:
-    radial-gradient(circle at 92% 2%, rgba(198, 154, 75, 0.13), transparent 25%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent 28%),
-    var(--paper);
-  box-shadow: 0 0 40px rgba(52, 44, 36, 0.12);
+  padding: 78px clamp(20px, 4vw, 54px) 34px;
+  border-radius: 26px;
+  background: var(--board-paper);
+  box-shadow: var(--board-shadow);
 }
 
-.paper-noise {
+.brand-mark {
   position: absolute;
-  inset: 0;
-  opacity: 0.1;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
-}
-
-.bamboo {
-  position: absolute;
-  top: -30px;
-  right: -45px;
-  width: 330px;
-  height: 420px;
-  opacity: 0.07;
-  pointer-events: none;
-  background:
-    linear-gradient(104deg, transparent 48%, #71684d 49%, #71684d 51%, transparent 52%),
-    radial-gradient(ellipse at 28% 35%, #71684d 0 10%, transparent 11%),
-    radial-gradient(ellipse at 72% 24%, #71684d 0 9%, transparent 10%),
-    radial-gradient(ellipse at 40% 62%, #71684d 0 11%, transparent 12%);
-}
-
-.mountains {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 230px;
-  opacity: 0.12;
-  pointer-events: none;
-  background: linear-gradient(145deg, transparent 42%, #b79d72 43% 55%, transparent 56%) 0 100% / 42% 100% repeat-x;
-}
-
-.header-bar { position: relative; z-index: 1; }
-.header-inner {
-  display: grid;
-  grid-template-columns: minmax(255px, 1fr) auto minmax(220px, 1fr);
-  align-items: center;
-  gap: 22px;
-  min-height: 150px;
-}
-
-.header-qr-card {
-  justify-self: start;
+  top: 0;
+  left: 50%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: 270px;
-  min-height: 124px;
-  padding: 8px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(255, 253, 248, 0.78);
-}
-.header-qr-img {
-  width: 108px;
-  height: 108px;
-  flex: 0 0 108px;
-  object-fit: cover;
-  padding: 4px;
-  border-radius: 9px;
-  background: #fff;
-}
-.header-qr-copy {
-  min-width: 0;
-  color: var(--ink);
-  line-height: 1.45;
+  gap: 16px;
+  transform: translate(-50%, -50%);
   white-space: nowrap;
 }
-.header-qr-title { font-size: 20px; font-weight: 800; }
-.header-qr-subtitle { font-size: 16px; color: var(--text-secondary); }
 
-.header-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.logo-section { display: flex; align-items: center; justify-content: center; gap: 15px; white-space: nowrap; }
-.logo-circle {
-  width: 104px;
-  height: 104px;
+.brand-logo {
+  width: clamp(92px, 14vw, 132px);
+  aspect-ratio: 1;
   overflow: hidden;
-  flex: 0 0 104px;
-  border: 2px solid rgba(198, 154, 75, 0.45);
+  border: 7px solid var(--board-paper);
   border-radius: 50%;
-  background: #fff;
+  background: var(--board-paper);
+  box-shadow: 0 8px 24px rgba(82, 48, 31, .2);
 }
-.logo-img { width: 100%; height: 100%; object-fit: cover; }
-.logo-title {
-  margin: 0;
-  color: #d38a1c;
-  font-size: 38px;
+.brand-logo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.brand-copy { text-align: left; }
+.brand-kicker {
+  margin: 0 0 4px;
+  color: var(--board-muted);
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 4px;
+  letter-spacing: .16em;
 }
-.logo-subtitle {
-  margin: 5px 0 0;
-  color: var(--text-secondary);
-  font-size: 16px;
-  letter-spacing: 2px;
+.brand-copy h1 {
+  margin: 0;
+  color: var(--board-red);
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: clamp(30px, 5vw, 50px);
+  line-height: 1;
+  letter-spacing: .1em;
 }
-.header-time {
-  justify-self: end;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 220px;
-  min-height: 100px;
-  padding: 14px;
-  border: 1px solid rgba(198, 154, 75, 0.45);
-  border-radius: 10px;
-  background: rgba(255, 253, 248, 0.76);
-  color: var(--ink);
-  font-size: 23px;
-  line-height: 1.45;
-  font-weight: 700;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-.header-rule {
-  position: relative;
-  z-index: 1;
+.brand-copy p:last-child { margin: 8px 0 0; color: var(--board-muted); font-size: 14px; letter-spacing: .18em; }
+
+.board-rule {
   height: 1px;
-  margin: 20px 0 24px;
-  background: linear-gradient(90deg, transparent, rgba(198, 154, 75, 0.45) 12%, rgba(198, 154, 75, 0.45) 88%, transparent);
+  margin: 0 0 28px;
+  background: linear-gradient(90deg, transparent, var(--board-line), transparent);
 }
+.board-intro { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+.board-eyebrow { margin: 0 0 5px; color: var(--board-brown-deep); font-size: 11px; font-weight: 800; letter-spacing: .15em; }
+.board-intro h2 { margin: 0; font-family: "Noto Serif SC", "Songti SC", serif; font-size: clamp(25px, 4vw, 38px); letter-spacing: .14em; }
+.board-status { color: var(--board-muted); font-size: 13px; text-align: right; }
+.board-status.is-error { color: var(--board-red); }
 
-.main-container { position: relative; z-index: 1; }
-.page-section { display: none; }
-.page-section.active { display: block; }
-.price-hero { margin-bottom: 22px; }
-.price-combo-card { display: grid; gap: 20px; }
-.price-card,
-.chart-section {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--border-color);
-  border-radius: 22px;
-  background: rgba(255, 253, 248, 0.93);
-  box-shadow: 0 12px 34px rgba(92, 69, 38, 0.08);
-}
-.price-card::after,
-.chart-section::after {
-  content: "";
-  position: absolute;
-  right: -28px;
-  bottom: -50px;
-  width: 270px;
-  height: 160px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(198, 154, 75, 0.1), transparent 68%);
-  pointer-events: none;
-}
-.price-card { min-height: 250px; padding: 28px 38px 26px; }
-.price-label-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-.price-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 13px;
-  color: var(--ink);
-  font-size: 28px;
+.table-wrap { overflow-x: auto; border: 1px solid var(--board-line); border-radius: 18px; }
+.gold-price-table { width: 100%; border-collapse: collapse; min-width: 590px; }
+.gold-price-table th,
+.gold-price-table td { padding: 18px clamp(12px, 2vw, 24px); border-bottom: 1px solid var(--board-line); text-align: center; }
+.gold-price-table thead th {
+  color: var(--board-muted);
+  background: #fff8f0;
+  font-size: 14px;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: .15em;
 }
-.price-label::before {
-  content: "";
-  width: 8px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--gold-primary);
-}
-.live-seal { color: var(--red-price); font-size: 34px; line-height: 1; font-weight: 800; letter-spacing: 3px; }
-.price-value-wrap { display: flex; align-items: baseline; gap: 14px; margin-top: 22px; white-space: nowrap; }
-.price-value {
-  display: inline-block;
-  color: var(--red-price);
-  font-family: "DIN Alternate", "Bahnschrift", sans-serif;
-  font-size: clamp(86px, 13vw, 142px);
-  line-height: 0.9;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  transform-origin: center bottom;
-  will-change: transform, opacity;
-}
-.buyback-card .price-value { color: var(--green-down); }
-.price-unit { color: var(--red-price); font-size: 38px; line-height: 1; font-weight: 700; }
-.buyback-card .price-unit { color: var(--green-down); }
-.price-meta { margin-top: 22px; color: var(--text-secondary); }
-.price-change {
-  display: grid;
-  grid-template-columns: max-content minmax(130px, 1fr);
-  column-gap: 16px;
-  row-gap: 8px;
-  align-items: baseline;
-  max-width: 440px;
-  font-size: 24px;
-}
-.meta-line { display: contents; line-height: 1.2; }
-.meta-label { justify-self: start; text-align: left; }
-.meta-value { justify-self: end; min-width: 0; text-align: right; font-variant-numeric: tabular-nums; }
-.price-change strong,
-.price-change .indicator-value,
-.price-change .indicator-percent { color: var(--red-price); font-weight: 800; }
-.price-range-meta .price-change strong { color: var(--green-down); }
-.change-value { display: flex; align-items: baseline; justify-content: flex-end; gap: 8px; }
-.indicator-value { font-size: 1.08em; }
-.indicator-percent { font-size: 0.82em; }
-
-@keyframes priceTickUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-@keyframes priceTickDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
-.price-tick-up { animation: priceTickUp 0.32s ease-out; }
-.price-tick-down { animation: priceTickDown 0.32s ease-out; }
-
-.chart-section { min-height: 500px; padding: 24px 28px 22px; }
-.chart-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.chart-title {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  margin: 0;
-  color: var(--ink);
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
-.chart-title::before { content: ""; width: 8px; height: 32px; border-radius: 8px; background: var(--gold-primary); }
-.chart-tab {
-  padding: 8px 20px;
-  border-radius: 999px;
-  color: var(--gold-deep);
-  background: #fffaf0;
-  box-shadow: 0 3px 12px rgba(92, 69, 38, 0.08);
-  font-size: 16px;
-  font-weight: 800;
-}
-.chart-main-wrap { margin-top: 20px; }
-.chart-box { width: 100%; border-radius: 10px; background: transparent; }
-#chart-gold-main { height: 420px; }
-
-.site-footer {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-top: 22px;
-  color: #d13e35;
-  font-size: 26px;
+.gold-price-table thead th:first-child { text-align: left; }
+.gold-price-table tbody tr:last-child th,
+.gold-price-table tbody tr:last-child td { border-bottom: 0; }
+.gold-price-table tbody th {
+  width: 30%;
+  color: var(--board-ink);
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: clamp(17px, 2.4vw, 25px);
   font-weight: 700;
-  text-align: center;
+  letter-spacing: .08em;
+  text-align: left;
 }
-.admin-footer-link {
-  color: var(--gold-deep);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: .06em;
-  text-decoration: none;
-  opacity: .72;
-}
-.admin-footer-link:hover { color: var(--gold-primary); opacity: 1; }
+.gold-price-table tbody tr:hover { background: #fffaf5; }
+.gold-price-table td { color: var(--board-red); font-family: "DIN Alternate", "Bahnschrift", sans-serif; font-size: clamp(31px, 5vw, 57px); font-variant-numeric: tabular-nums; font-weight: 800; line-height: 1; }
+.gold-price-table td:last-child { color: var(--board-recycle); }
+.gold-price-table small { display: block; margin-top: 6px; color: var(--board-muted); font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 12px; font-weight: 600; }
 
-@media (max-width: 768px) {
-  .screen { padding: 14px 12px 24px; }
-  .header-inner {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 12px;
-    min-height: 105px;
-  }
-  .header-qr-card { display: flex; width: 190px; min-height: 88px; padding: 6px; gap: 7px; }
-  .header-qr-img { width: 74px; height: 74px; flex-basis: 74px; }
-  .header-qr-title { font-size: 19px; }
-  .header-qr-subtitle { font-size: 15px; }
-  .header-center { align-items: center; transform: translateX(10px); }
-  .logo-section { justify-content: center; gap: 8px; }
-  .logo-circle { width: 58px; height: 58px; flex-basis: 58px; }
-  .logo-title { font-size: 24px; letter-spacing: 2px; }
-  .logo-subtitle { font-size: 11px; letter-spacing: 0; }
-  .header-time {
-    grid-column: 2;
-    justify-self: center;
-    width: auto;
-    min-height: 0;
-    margin-top: -30px;
-    padding: 4px 8px;
-    border-radius: 8px;
-    font-size: 14px;
-    white-space: nowrap;
-  }
-  .header-rule { margin: 10px 0 14px; }
-  .price-combo-card { gap: 12px; }
-  .price-card { min-height: 210px; padding: 20px 20px 18px; }
-  .price-label { font-size: 25px; }
-  .live-seal { font-size: 24px; }
-  .price-value { font-size: clamp(68px, 17vw, 108px); }
-  .price-unit { font-size: 30px; }
-  .price-change { font-size: 19px; grid-template-columns: max-content minmax(110px, 1fr); }
-  .chart-section { min-height: 380px; padding: 16px 12px 12px; }
-  .chart-title { font-size: 24px; }
-  #chart-gold-main { height: 300px; }
-  .site-footer { font-size: 20px; }
-}
+.board-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 26px; }
+.qr-block { display: flex; align-items: center; gap: 12px; color: var(--board-ink); }
+.qr-block img { width: 72px; height: 72px; padding: 4px; border: 1px solid var(--board-line); border-radius: 10px; background: #fff; }
+.qr-block strong, .qr-block span { display: block; }
+.qr-block strong { font-family: "Noto Serif SC", "Songti SC", serif; font-size: 17px; }
+.qr-block span { margin-top: 5px; color: var(--board-muted); font-size: 12px; }
+.board-notice { color: var(--board-red); text-align: right; }
+.board-notice p { margin: 0 0 6px; font-size: 15px; font-weight: 800; letter-spacing: .04em; }
+.board-notice small { color: var(--board-muted); font-size: 12px; }
 
-@media (max-width: 480px) {
-  .screen { padding: 10px 8px 20px; }
-  .header-inner { grid-template-columns: auto minmax(0, 1fr); gap: 8px; }
-  .header-qr-card { width: 150px; min-height: 70px; padding: 5px; gap: 5px; }
-  .header-qr-img { width: 58px; height: 58px; flex-basis: 58px; }
-  .header-qr-title { font-size: 16px; }
-  .header-qr-subtitle { font-size: 12px; }
-  .header-center { transform: translateX(6px); }
-  .logo-circle { width: 46px; height: 46px; flex-basis: 46px; }
-  .logo-title { font-size: 19px; letter-spacing: 1px; }
-  .logo-subtitle { font-size: 9px; }
-  .header-time { margin-top: -23px; font-size: 11px; padding: 3px 5px; }
-  .price-card { min-height: 180px; padding: 16px 14px; border-radius: 16px; }
-  .price-label { gap: 9px; font-size: 22px; }
-  .price-label::before { width: 7px; height: 27px; }
-  .live-seal { font-size: 19px; letter-spacing: 1px; }
-  .price-value-wrap { gap: 8px; margin-top: 18px; }
-  .price-value { font-size: clamp(58px, 18vw, 84px); }
-  .price-unit { font-size: 24px; }
-  .price-meta { margin-top: 18px; }
-  .price-change { max-width: 100%; grid-template-columns: max-content 1fr; column-gap: 10px; font-size: 16px; }
-  .change-value { gap: 5px; }
-  .chart-section { min-height: 350px; padding: 14px 6px 8px; border-radius: 16px; }
-  .chart-title { margin-left: 8px; font-size: 21px; }
-  .chart-title::before { width: 7px; height: 26px; }
-  .chart-tab { margin-right: 8px; padding: 6px 14px; font-size: 14px; }
-  .chart-main-wrap { margin-top: 10px; }
-  #chart-gold-main { height: 280px; }
-  .site-footer { margin-top: 16px; font-size: 16px; }
+@media (max-width: 640px) {
+  .gold-price-board { padding: 76px 10px 20px; }
+  .board-shell { padding: 64px 12px 22px; border-radius: 20px; }
+  .brand-mark { gap: 10px; }
+  .brand-logo { border-width: 5px; }
+  .brand-kicker { font-size: 8px; }
+  .brand-copy h1 { font-size: 31px; }
+  .brand-copy p:last-child { margin-top: 5px; font-size: 11px; letter-spacing: .1em; }
+  .board-rule { margin-bottom: 20px; }
+  .board-intro { align-items: start; flex-direction: column; gap: 7px; }
+  .board-status { text-align: left; }
+  .gold-price-table { min-width: 0; }
+  .gold-price-table th, .gold-price-table td { padding: 15px 8px; }
+  .gold-price-table tbody th { width: 29%; font-size: 15px; letter-spacing: 0; }
+  .gold-price-table td { font-size: 28px; }
+  .gold-price-table small { font-size: 10px; }
+  .board-footer { align-items: flex-start; flex-direction: column; gap: 18px; }
+  .board-notice { width: 100%; text-align: left; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .price-tick-up,
-  .price-tick-down { animation: none; }
+  * { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
 }

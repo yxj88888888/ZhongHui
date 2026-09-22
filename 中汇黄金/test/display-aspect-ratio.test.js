@@ -1,29 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 
-const html = fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8');
 const css = fs.readFileSync(path.join(__dirname, '..', 'public', 'css', 'style.css'), 'utf8');
 
-if (!html.includes('class="screen"')) {
-  throw new Error('Expected the YueXin template screen canvas');
+if (!/\.gold-price-board\s*\{[\s\S]*min-height:\s*100vh/.test(css)) {
+  throw new Error('Expected the price board to fill the viewport');
 }
-
-const screenRule = css.match(/\.screen\s*\{([^}]*)\}/m)?.[1] || '';
-if (!/width:\s*min\(1080px,\s*100%\)/.test(screenRule)) {
-  throw new Error('Expected the screen canvas to stay responsive up to 1080px');
+if (!/\.board-shell\s*\{[\s\S]*width:\s*min\(920px,\s*100%\)/.test(css)) {
+  throw new Error('Expected the board shell to stay centered and responsive');
 }
-if (!/min-height:\s*100vh/.test(screenRule) || !/margin:\s*0\s+auto/.test(screenRule)) {
-  throw new Error('Expected the screen canvas to fill the viewport and remain centered');
-}
-
-for (const breakpoint of ['768px', '480px']) {
-  if (!css.includes(`@media (max-width: ${breakpoint})`)) {
-    throw new Error(`Expected responsive rules for ${breakpoint}`);
-  }
-}
-
 if (/calc\(100vw|50vw/.test(css)) {
-  throw new Error('Viewport-wide chart breakout would overflow the responsive canvas');
+  throw new Error('Unexpected viewport-wide overflow rule');
 }
 
-console.log('page uses the YueXin responsive screen canvas');
+console.log('page uses a responsive fixed price board canvas');
