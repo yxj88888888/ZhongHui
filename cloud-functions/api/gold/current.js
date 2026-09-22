@@ -1,21 +1,13 @@
-import { fetchGoldPrice, toPublicPrice } from './_service.js';
+import { json } from '../_shared/http.js';
+import { getControlStore } from '../_shared/store.js';
+import { readCurrentPrices, toPublicPricePayload } from './_service.js';
 
-function json(body, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      'Cache-Control': 'no-store',
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  });
-}
-
-export async function onRequestGet() {
+export async function onRequestGet(context = {}) {
   try {
-    const price = await fetchGoldPrice();
-    return json({ code: 1, data: toPublicPrice(price) });
+    const state = await readCurrentPrices(context.store || getControlStore());
+    return json({ code: 1, data: toPublicPricePayload(state) });
   } catch (error) {
-    console.error('Failed to fetch current gold price:', error);
-    return json({ code: 0, data: null, msg: '金价数据暂时不可用' }, 502);
+    console.error('Failed to read fixed gold prices:', error);
+    return json({ code: 0, data: null, msg: '金价数据暂时不可用' }, 503);
   }
 }

@@ -1,105 +1,82 @@
-const GOLD_PRICE_SOURCE_URL =
-  'https://goldcard.yunxua.com/index/index/getRealTimePrices?sid=1003';
-const YUEXIN_MARKUP = 5;
-const YUEXIN_MARKUP_START_MINUTE = 15 * 60 + 30;
-const YUEXIN_MARKUP_END_MINUTE = 20 * 60;
-const MAX_HISTORY_POINTS = 1000;
+import {
+  appendPriceSnapshot,
+  DEFAULT_PRICES,
+  formatPublicPrices,
+  normalizePriceRows,
+} from './defaults.js';
+import { getControlStore, readJson, writeJson } from '../_shared/store.js';
 
-function getBeijingMinuteOfDay(now) {
-  const parts = new Intl.DateTimeFormat('zh-CN', {
-    timeZone: 'Asia/Shanghai',
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-  }).formatToParts(now);
+export const PRICES_KEY = 'gold/prices.json';
+export const HISTORY_KEY = 'gold/history.json';
 
-  const hour = Number(parts.find((part) => part.type === 'hour')?.value);
-  const minute = Number(parts.find((part) => part.type === 'minute')?.value);
-  return hour * 60 + minute;
+function nowIso() {
+  return new Date().toISOString();
 }
 
-function getBeijingDayStart(timestamp) {
-  const shifted = new Date(timestamp + 8 * 60 * 60 * 1000);
-  return Date.UTC(
-    shifted.getUTCFullYear(),
-    shifted.getUTCMonth(),
-    shifted.getUTCDate(),
-  ) - 8 * 60 * 60 * 1000;
-}
-
-export function applyDisplayPriceRule(sourcePrice, now = new Date()) {
-  const salePrice = Number(sourcePrice.sale_price);
-  const buybackPrice = Number(sourcePrice.buyback_price);
-  if (!Number.isFinite(salePrice) || !Number.isFinite(buybackPrice)) {
-    throw new Error('Invalid gold price response');
+export async function readCurrentPrices(store = getControlStore()) {
+  const saved = await readJson(store, PRICES_KEY, null);
+  if (saved?.prices) {
+    return {
+      prices: normalizePriceRows(saved.prices),
+      update_time: saved.update_time || nowIso(),
+      updated_by: saved.updated_by || 'system',
+    };
   }
 
-  const minuteOfDay = getBeijingMinuteOfDay(now);
-  const markup =
-    minuteOfDay >= YUEXIN_MARKUP_START_MINUTE &&
-    minuteOfDay < YUEXIN_MARKUP_END_MINUTE
-      ? YUEXIN_MARKUP
-      : 0;
-
-  return {
-    sale_price: salePrice + markup,
-    buyback_price: buybackPrice,
-    update_time: sourcePrice.update_time,
+  const initial = {
+    prices: normalizePriceRows(DEFAULT_PRICES),
+    update_time: nowIso(),
+    updated_by: 'system',
   };
+  await writeJson(store, PRICES_KEY, initial);
+  return initial;
 }
 
-export async function fetchGoldPrice(fetchImpl = fetch, now = new Date()) {
-  const response = await fetchImpl(GOLD_PRICE_SOURCE_URL, {
-    signal: AbortSignal.timeout(5000),
+export async function getCurrentPrices(store = getControlStore()) {
+  return readCurrentPrices(store);
+}
+
+export async function savePrices(store = getControlStore(), rows, actor = {}) {
+  const prices = normalizePriceRows(rows);
+  const previousHistory = await readJson(store, HISTORY_KEY, []);
+  const update_time = nowIso();
+  const current = {
+    prices,
+    update_time,
+    updated_by: actor.username || 'system',
+  };
+  const history = appendPriceSnapshot(previousHistory, prices, {
+    username: current.updated_by,
+    timestamp: update_time,
   });
-  if (!response.ok) {
-    throw new Error('Gold price source returned ' + response.status);
-  }
+  await writeJson(store, PRICES_KEY, current);
+  await writeJson(store, HISTORY_KEY, history);
+  return current;
+}
 
-  const payload = await response.json();
-  if (payload.code !== 1 || !payload.data) {
-    throw new Error('Gold price source returned invalid data');
-  }
+export async function saveCurrentPrices(store, rows, actor) {
+  return savePrices(store, rows, actor);
+}
 
-  const price = applyDisplayPriceRule(payload.data, now);
+export async function readPriceHistory(
+  store = getControlStore(),
+  range = 'today',
+  now = Date.now(),
+) {
+  const history = await readJson(store, HISTORY_KEY, []);
+  const cutoff = range === 'month'
+    ? now - 30 * 24 * 60 * 60 * 1000
+    : range === 'week'
+      ? now - 7 * 24 * 60 * 60 * 1000
+      : new Date(now).setHours(0, 0, 0, 0);
+  return history
+    .filter((snapshot) => Date.parse(snapshot.timestamp) >= cutoff)
+    .sort((left, right) => Date.parse(left.timestamp) - Date.parse(right.timestamp));
+}
+
+export function toPublicPricePayload(state) {
   return {
-    time:
-      price.update_time ||
-      now.toLocaleString('zh-CN', { hour12: false, timeZone: 'Asia/Shanghai' }),
-    sale_price: price.sale_price,
-    buyback_price: price.buyback_price,
-    timestamp: now.getTime(),
+    prices: formatPublicPrices(state.prices),
+    update_time: state.update_time,
   };
-}
-
-export function toPublicPrice(point) {
-  return {
-    sale_price: Number(point.sale_price).toFixed(2),
-    buyback_price: Number(point.buyback_price).toFixed(2),
-    update_time: point.time,
-  };
-}
-
-export function appendHistory(history, point) {
-  const points = Array.isArray(history) ? history.slice() : [];
-  const last = points.at(-1);
-  if (
-    !last ||
-    Number(last.sale_price) !== Number(point.sale_price) ||
-    Number(last.buyback_price) !== Number(point.buyback_price)
-  ) {
-    points.push(point);
-  }
-  return points.slice(-MAX_HISTORY_POINTS);
-}
-
-export function selectHistory(history, range = 'today', now = Date.now()) {
-  const points = Array.isArray(history) ? history : [];
-  let cutoff = getBeijingDayStart(now);
-  if (range === 'week') cutoff = now - 7 * 24 * 60 * 60 * 1000;
-  if (range === 'month') cutoff = now - 30 * 24 * 60 * 60 * 1000;
-
-  return points
-    .filter((point) => Number(point.timestamp) >= cutoff)
-    .sort((left, right) => Number(left.timestamp) - Number(right.timestamp));
 }
