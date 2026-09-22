@@ -5,10 +5,10 @@ import {
   verifyPassword,
   createSessionCookie,
   readSessionCookie,
-  can,
   ensureBootstrapAdmin,
 } from '../cloud-functions/api/_shared/auth.js';
 import { createMemoryStore } from '../cloud-functions/api/_shared/store.js';
+import { can } from '../cloud-functions/api/_shared/permissions.js';
 
 const store = createMemoryStore();
 const hash = await hashPassword('change-me');

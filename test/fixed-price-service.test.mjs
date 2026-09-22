@@ -17,7 +17,9 @@ assert.deepEqual(DEFAULT_PRICES.map(({ id }) => id), [
 assert.equal(DEFAULT_PRICES[0].sell_price, 1107);
 assert.equal(DEFAULT_PRICES[4].recycle_price, 12.7);
 assert.throws(
-  () => normalizePriceRows([{ id: 'jewelry_gold', sell_price: -1, recycle_price: 918 }]),
+  () => normalizePriceRows(DEFAULT_PRICES.map((row, index) => (
+    index === 0 ? { ...row, sell_price: -1 } : row
+  ))),
   /positive|invalid/i,
 );
 assert.throws(
