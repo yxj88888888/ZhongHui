@@ -27,7 +27,7 @@ function normalizeNumber(value, field, id) {
   if (!Number.isFinite(number) || number <= 0 || number > 999999.99) {
     throw new Error(field + ' for ' + id + ' must be a positive number');
   }
-  if (Math.round(number * 100) !== number * 100) {
+  if (Math.abs(number * 100 - Math.round(number * 100)) > 1e-8) {
     throw new Error(field + ' for ' + id + ' must have at most two decimals');
   }
   return number;
