@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node test/cloud-function-gold.test.mjs && node test/yuexin-template-sync.test.mjs"
+    "test": "node test/fixed-price-service.test.mjs && node test/admin-auth.test.mjs && node test/cloud-function-gold.test.mjs && node test/admin-functions.test.mjs && node test/yuexin-template-sync.test.mjs"
   },
   "dependencies": {
     "@edgeone/pages-blob": "latest"
