@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>粤鑫金 · 价格后台</title>
+  <link rel="stylesheet" href="admin.css?v=fixed-price-admin-20260923">
+</head>
+<body>
+  <main class="admin-shell">
+    <section class="admin-card admin-login" id="admin-login">
+      <div class="admin-brand">
+        <span class="admin-mark">粤鑫</span>
+        <div><strong>粤鑫金</strong><small>价格后台</small></div>
+      </div>
+      <p class="admin-kicker">SECURE CONTROL ROOM</p>
+      <h1>登录后台</h1>
+      <p class="admin-muted">请使用已分配的账号访问价格和门店设置。</p>
+      <form id="login-form" class="admin-form">
+        <label>账号<input name="username" autocomplete="username" required></label>
+        <label>密码<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="admin-primary" type="submit">登录</button>
+      </form>
+      <p class="admin-message" id="login-message" role="alert"></p>
+    </section>
+
+    <section class="admin-card admin-password-card is-hidden" id="force-password-change">
+      <p class="admin-kicker">FIRST LOGIN</p>
+      <h1>请先修改初始密码</h1>
+      <p class="admin-muted">为了账号安全，首次登录必须设置新的密码。</p>
+      <form id="force-password-form" class="admin-form">
+        <label>当前密码<input name="current_password" type="password" required></label>
+        <label>新密码<input name="new_password" type="password" minlength="8" required></label>
+        <label>确认新密码<input name="confirm_password" type="password" minlength="8" required></label>
+        <button class="admin-primary" type="submit">保存新密码</button>
+      </form>
+      <p class="admin-message" id="force-password-message" role="alert"></p>
+    </section>
+
+    <section class="admin-app is-hidden" id="admin-app">
+      <header class="admin-topbar">
+        <div class="admin-brand">
+          <span class="admin-mark">粤鑫</span>
+          <div><strong>粤鑫金</strong><small>价格控制台</small></div>
+        </div>
+        <div class="admin-session">
+          <span id="session-user">--</span>
+          <button id="logout-button" class="admin-ghost" type="button">退出</button>
+        </div>
+      </header>
+
+      <nav class="admin-nav" aria-label="后台模块">
+        <button class="is-active" data-panel="price-editor" type="button">价格管理</button>
+        <button data-panel="user-manager" id="user-nav" type="button">账号管理</button>
+        <button data-panel="audit-log" id="audit-nav" type="button">操作日志</button>
+      </nav>
+
+      <section class="admin-panel" id="price-editor">
+        <div class="panel-heading">
+          <div><p class="admin-kicker">PRICE BOARD</p><h1>五行价格</h1></div>
+          <p class="admin-muted" id="price-updated">--</p>
+        </div>
+        <form id="price-form">
+          <div class="price-editor-table">
+            <div class="price-editor-row price-editor-head"><span>品类</span><span>今日价格</span><span>回收价格</span></div>
+            <div class="price-editor-row" data-price-id="jewelry_gold"><strong>首饰金</strong><input data-price-field="sell" inputmode="decimal" required><input data-price-field="recycle" inputmode="decimal" required></div>
+            <div class="price-editor-row" data-price-id="non_member_bar"><strong>非会员金条</strong><input data-price-field="sell" inputmode="decimal" required><input data-price-field="recycle" inputmode="decimal" required></div>
+            <div class="price-editor-row" data-price-id="member_bar"><strong>会员金条</strong><input data-price-field="sell" inputmode="decimal" required><input data-price-field="recycle" inputmode="decimal" required></div>
+            <div class="price-editor-row" data-price-id="platinum"><strong>铂金</strong><input data-price-field="sell" inputmode="decimal" required><input data-price-field="recycle" inputmode="decimal" required></div>
+            <div class="price-editor-row" data-price-id="silver"><strong>白银</strong><input data-price-field="sell" inputmode="decimal" required><input data-price-field="recycle" inputmode="decimal" required></div>
+          </div>
+          <div class="panel-actions"><button class="admin-primary" type="submit">保存价格</button><span class="admin-message" id="price-message" role="status"></span></div>
+        </form>
+      </section>
+
+      <section class="admin-panel is-hidden" id="user-manager">
+        <div class="panel-heading"><div><p class="admin-kicker">TEAM ACCESS</p><h1>账号管理</h1></div></div>
+        <form id="user-form" class="inline-form">
+          <input name="username" placeholder="新账号" required>
+          <select name="role"><option value="manager">店长</option><option value="clerk">店员</option></select>
+          <input name="temporary_password" type="password" placeholder="临时密码" minlength="8" required>
+          <button class="admin-primary" type="submit">创建账号</button>
+        </form>
+        <div id="user-list" class="admin-list"></div>
+        <p class="admin-message" id="user-message" role="status"></p>
+      </section>
+
+      <section class="admin-panel is-hidden" id="audit-log">
+        <div class="panel-heading"><div><p class="admin-kicker">AUDIT TRAIL</p><h1>操作日志</h1></div></div>
+        <div id="audit-list" class="admin-list"></div>
+      </section>
+    </section>
+  </main>
+  <script src="admin.js?v=fixed-price-admin-20260923"></script>
+</body>
+</html>

@@ -2,10 +2,13 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const publicRoot = new URL('../中汇黄金/public/', import.meta.url);
-const [html, css, app] = await Promise.all([
+const [html, css, app, adminHtml, adminCss, adminJs] = await Promise.all([
   readFile(new URL('index.html', publicRoot), 'utf8'),
   readFile(new URL('css/style.css', publicRoot), 'utf8'),
   readFile(new URL('js/app.js', publicRoot), 'utf8'),
+  readFile(new URL('admin/index.html', publicRoot), 'utf8'),
+  readFile(new URL('admin/admin.css', publicRoot), 'utf8'),
+  readFile(new URL('admin/admin.js', publicRoot), 'utf8'),
 ]);
 
 for (const marker of [
@@ -28,5 +31,18 @@ assert.ok(/border-radius:\s*(1[2-9]|[2-9][0-9])px/.test(css), 'missing rounded p
 assert.ok(/@media\s*\(max-width:\s*640px\)/.test(css), 'missing mobile price board breakpoint');
 assert.ok(app.includes("fetch('/api/gold/current'"), 'public page must use fixed gold API');
 assert.ok(!app.includes('goldcard.yunxua.com'), 'public page must not call external gold source');
+
+for (const marker of [
+  'admin-login',
+  'admin-app',
+  'price-editor',
+  'user-manager',
+  'audit-log',
+  'force-password-change',
+]) {
+  assert.ok(adminHtml.includes(marker), 'missing admin marker: ' + marker);
+}
+assert.ok(adminCss.includes('--admin-ink'), 'missing admin visual tokens');
+assert.ok(adminJs.includes('/api/admin/login'), 'admin page must use admin login endpoint');
 
 console.log('Fixed price board template contract passed');
