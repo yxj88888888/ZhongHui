@@ -12,10 +12,13 @@ const LAN_HOST = process.env.LAN_HOST || '192.168.1.168';
 const DATA_DIR = path.join(__dirname, 'data', 'daily');
 const REG_FILE = path.join(__dirname, 'data', 'registrations.json');
 const ORDER_FILE = path.join(__dirname, 'data', 'orders.json');
-const GOLD_PRICE_SOURCE_URL = 'https://goldcard.yunxua.com/index/index/getRealTimePrices?sid=1003';
-const YUEXIN_MARKUP = 5;
-const YUEXIN_MARKUP_START_MINUTE = 15 * 60 + 30;
-const YUEXIN_MARKUP_END_MINUTE = 20 * 60;
+const FIXED_PRICES = Object.freeze([
+  { id: 'jewelry_gold', label: '首饰金', sell_price: 1107, recycle_price: 918, unit: '元/克' },
+  { id: 'non_member_bar', label: '非会员金条', sell_price: 1042, recycle_price: 918, unit: '元/克' },
+  { id: 'member_bar', label: '会员金条', sell_price: 976, recycle_price: 918, unit: '元/克' },
+  { id: 'platinum', label: '铂金', sell_price: 441, recycle_price: 357, unit: '元/克' },
+  { id: 'silver', label: '白银', sell_price: 19.8, recycle_price: 12.7, unit: '元/克' }
+]);
 
 // ========== 微信公众号配置 ==========
 const WECHAT_TOKEN = process.env.WECHAT_TOKEN || 'yuexin_token_2024';
@@ -61,40 +64,6 @@ function getMinuteKey(ts) {
   const d = new Date(ts);
   return d.getHours().toString().padStart(2,'0') + ':' +
          d.getMinutes().toString().padStart(2,'0');
-}
-
-function getBeijingMinuteOfDay(now = new Date()) {
-  const parts = new Intl.DateTimeFormat('zh-CN', {
-    timeZone: 'Asia/Shanghai',
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit'
-  }).formatToParts(now);
-
-  const hour = Number(parts.find(part => part.type === 'hour')?.value);
-  const minute = Number(parts.find(part => part.type === 'minute')?.value);
-  return hour * 60 + minute;
-}
-
-function shouldApplyYuexinMarkup(now = new Date()) {
-  const minuteOfDay = getBeijingMinuteOfDay(now);
-  return minuteOfDay >= YUEXIN_MARKUP_START_MINUTE &&
-    minuteOfDay < YUEXIN_MARKUP_END_MINUTE;
-}
-
-function applyDisplayPriceRule(sourcePrice, now = new Date()) {
-  const sourceSale = Number(sourcePrice.sale_price);
-  const sourceBuyback = Number(sourcePrice.buyback_price);
-  const markup = shouldApplyYuexinMarkup(now) ? YUEXIN_MARKUP : 0;
-
-  return {
-    sale_price: sourceSale + markup,
-    buyback_price: sourceBuyback,
-    update_time: sourcePrice.update_time,
-    source_sale_price: sourceSale,
-    source_buyback_price: sourceBuyback,
-    markup
-  };
 }
 
 // ========== 数据持久化 ==========
@@ -177,18 +146,12 @@ function reloadHistoricalData() {
 // ========== 数据采集 ==========
 
 async function fetchGoldPrice() {
-  try {
-    const resp = await fetch(GOLD_PRICE_SOURCE_URL, {
-      timeout: 5000
-    });
-    const data = await resp.json();
-    if (data.code === 1) {
-      return applyDisplayPriceRule(data.data);
-    }
-  } catch (e) {
-    console.error('获取金价失败:', e.message);
-  }
-  return null;
+  const first = FIXED_PRICES[0];
+  return {
+    sale_price: first.sell_price,
+    buyback_price: first.recycle_price,
+    update_time: new Date().toLocaleString('zh-CN', { hour12: false })
+  };
 }
 
 async function fetchExternalData() {
@@ -302,13 +265,17 @@ app.get('/api/gold/current', (req, res) => {
   const latest = cachedCurrentPrice || (goldPriceHistory.length > 0
     ? goldPriceHistory[goldPriceHistory.length - 1]
     : null);
+  const updateTime = latest?.time || new Date().toLocaleString('zh-CN', { hour12: false });
   res.json({
     code: 1,
-    data: latest ? {
-      sale_price: latest.sale_price.toFixed(2),
-      buyback_price: latest.buyback_price.toFixed(2),
-      update_time: latest.time
-    } : null
+    data: {
+      prices: FIXED_PRICES.map((price) => ({
+        ...price,
+        sell_price: price.sell_price.toFixed(2),
+        recycle_price: price.recycle_price.toFixed(2)
+      })),
+      update_time: updateTime
+    }
   });
 });
 
@@ -352,7 +319,18 @@ app.get('/api/gold/history', (req, res) => {
     }
   }
 
-  res.json({ code: 1, data });
+  res.json({
+    code: 1,
+    data: data.map((point) => ({
+      timestamp: point.timestamp,
+      updated_by: 'local',
+      prices: FIXED_PRICES.map((price) => ({
+        ...price,
+        sell_price: price.sell_price.toFixed(2),
+        recycle_price: price.recycle_price.toFixed(2)
+      }))
+    }))
+  });
 });
 
 // 获取外部数据

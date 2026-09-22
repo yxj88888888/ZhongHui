@@ -1,4 +1,4 @@
-const state = { user: null, capabilities: {}, prices: [], users: [] };
+const state = { user: null, capabilities: {}, prices: [], updatedAt: '--', users: [] };
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 
@@ -57,14 +57,15 @@ function renderPrices() {
     row.querySelector('[data-price-field="sell"]').value = price.sell_price;
     row.querySelector('[data-price-field="recycle"]').value = price.recycle_price;
   });
-  const updateTime = state.prices.update_time || state.updated_at || '--';
-  $('#price-updated').textContent = updateTime;
+  $('#price-updated').textContent = state.updatedAt || '--';
   const canWrite = state.capabilities['prices:write'] === true;
   $$('#price-form input, #price-form button').forEach((field) => { field.disabled = !canWrite; });
 }
 
 async function loadPrices() {
-  state.prices = (await api('/api/admin/prices')).prices || [];
+  const data = await api('/api/admin/prices');
+  state.prices = data.prices || [];
+  state.updatedAt = data.update_time || '--';
   renderPrices();
 }
 
