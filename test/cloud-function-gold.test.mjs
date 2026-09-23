@@ -24,6 +24,7 @@ const changed = initial.prices.map((row) => (
 ));
 const saved = await savePrices(store, changed, { username: 'XBZJ001' });
 assert.equal(saved.prices[0].sell_price, 1111);
+assert.match(saved.update_time, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
 
 const history = await readPriceHistory(store, 'today', Date.now());
 assert.equal(history.length, 1);

@@ -5,6 +5,7 @@ import {
   normalizePriceRows,
   formatPublicPrices,
   appendPriceSnapshot,
+  formatBeijingTime,
 } from '../cloud-functions/api/gold/defaults.js';
 
 assert.deepEqual(DEFAULT_PRICES.map(({ id }) => id), [
@@ -39,5 +40,9 @@ const snapshot = appendPriceSnapshot([], DEFAULT_PRICES, {
 });
 assert.equal(snapshot.length, 1);
 assert.equal(snapshot[0].prices.length, 5);
+assert.equal(
+  formatBeijingTime(new Date('2026-09-23T08:42:17.000Z')),
+  '2026-09-23 16:42',
+);
 
 console.log('Fixed price service red-green contract passed');

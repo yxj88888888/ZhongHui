@@ -2,6 +2,7 @@ import {
   appendPriceSnapshot,
   DEFAULT_PRICES,
   formatPublicPrices,
+  formatBeijingTime,
   normalizePriceRows,
 } from './defaults.js';
 import { getControlStore, readJson, writeJson } from '../_shared/store.js';
@@ -18,14 +19,16 @@ export async function readCurrentPrices(store = getControlStore()) {
   if (saved?.prices) {
     return {
       prices: normalizePriceRows(saved.prices),
-      update_time: saved.update_time || nowIso(),
+      update_time: formatBeijingTime(saved.updated_at || saved.update_time || nowIso()),
       updated_by: saved.updated_by || 'system',
     };
   }
 
+  const updated_at = nowIso();
   const initial = {
     prices: normalizePriceRows(DEFAULT_PRICES),
-    update_time: nowIso(),
+    update_time: formatBeijingTime(updated_at),
+    updated_at,
     updated_by: 'system',
   };
   await writeJson(store, PRICES_KEY, initial);
@@ -39,15 +42,17 @@ export async function getCurrentPrices(store = getControlStore()) {
 export async function savePrices(store = getControlStore(), rows, actor = {}) {
   const prices = normalizePriceRows(rows);
   const previousHistory = await readJson(store, HISTORY_KEY, []);
-  const update_time = nowIso();
+  const updated_at = nowIso();
+  const update_time = formatBeijingTime(updated_at);
   const current = {
     prices,
     update_time,
+    updated_at,
     updated_by: actor.username || 'system',
   };
   const history = appendPriceSnapshot(previousHistory, prices, {
     username: current.updated_by,
-    timestamp: update_time,
+    timestamp: updated_at,
   });
   await writeJson(store, PRICES_KEY, current);
   await writeJson(store, HISTORY_KEY, history);

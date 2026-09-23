@@ -22,6 +22,23 @@ export const DEFAULT_PRICES = Object.freeze([
   { id: 'silver', label: DEFAULT_LABELS.silver, sell_price: 19.8, recycle_price: 12.7, unit: '元/克' },
 ]);
 
+export function formatBeijingTime(value = new Date()) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) throw new Error('invalid update time');
+  const parts = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    hour12: false,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).formatToParts(date);
+  const read = (type) => parts.find((part) => part.type === type)?.value || '';
+  return read('year') + '-' + read('month') + '-' + read('day') + ' ' +
+    read('hour') + ':' + read('minute');
+}
+
 function normalizeNumber(value, field, id) {
   const number = Number(value);
   if (!Number.isFinite(number) || number <= 0 || number > 999999.99) {

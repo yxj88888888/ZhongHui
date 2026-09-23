@@ -20,6 +20,22 @@ const FIXED_PRICES = Object.freeze([
   { id: 'silver', label: '白银', sell_price: 19.8, recycle_price: 12.7, unit: '元/克' }
 ]);
 
+function formatBeijingTime(value = new Date()) {
+  const date = value instanceof Date ? value : new Date(value);
+  const parts = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    hour12: false,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).formatToParts(date);
+  const read = (type) => parts.find(part => part.type === type)?.value || '';
+  return read('year') + '-' + read('month') + '-' + read('day') + ' ' +
+    read('hour') + ':' + read('minute');
+}
+
 // ========== 微信公众号配置 ==========
 const WECHAT_TOKEN = process.env.WECHAT_TOKEN || 'yuexin_token_2024';
 
@@ -150,7 +166,7 @@ async function fetchGoldPrice() {
   return {
     sale_price: first.sell_price,
     buyback_price: first.recycle_price,
-    update_time: new Date().toLocaleString('zh-CN', { hour12: false })
+    update_time: formatBeijingTime()
   };
 }
 
