@@ -30,5 +30,16 @@ if (!css.includes('@media (max-width: 640px)')) {
 if (!app.includes("fetch('/api/gold/current'") || app.includes('goldcard.yunxua.com')) {
   throw new Error('Expected fixed gold API without external source');
 }
+for (const removedMarker of [
+  'class="brand-copy"',
+  'class="board-intro"',
+  'WESTERN ZHENG JI',
+  '贵金属价格牌',
+  '价格已更新',
+]) {
+  if (html.includes(removedMarker)) {
+    throw new Error('Duplicate brand header must be removed: ' + removedMarker);
+  }
+}
 
 console.log('fixed price board structure and styles are present');
