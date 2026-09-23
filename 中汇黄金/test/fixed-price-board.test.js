@@ -18,8 +18,8 @@ for (const marker of [
   if (!html.includes(marker)) throw new Error('Missing fixed price board marker: ' + marker);
 }
 
-if (!html.includes('images/store/logo.jpg') || !html.includes('images/store-wechat-qr.jpg')) {
-  throw new Error('Expected existing store logo and QR assets');
+if (!html.includes('images/western-zhengji-logo.jpg') || !html.includes('images/store-wechat-qr.jpg')) {
+  throw new Error('Expected new Western Zheng Ji logo and QR assets');
 }
 if (!css.includes('--board-brown: #cf9f79') || !css.includes('.gold-price-table')) {
   throw new Error('Expected warm-brown table styling');

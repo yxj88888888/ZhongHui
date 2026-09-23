@@ -10,7 +10,7 @@ const mojibakeMarkers = ['浠婃棩', '鍥炶喘', '瀹炴椂', '璧板娍', '�
 for (const marker of mojibakeMarkers) {
   if (visibleSources.includes(marker)) throw new Error('Visible source contains mojibake: ' + marker);
 }
-for (const text of ['品类', '今日价格', '回收价格', '元/克', '粤鑫金', '更新时间']) {
+for (const text of ['品类', '今日价格', '回收价格', '元/克', '西部郑记', '更新时间']) {
   if (!html.includes(text)) throw new Error('Missing expected HTML copy: ' + text);
 }
 if (!app.includes('价格暂时不可用') || !app.includes('读取固定金价失败')) {

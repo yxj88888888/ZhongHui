@@ -32,7 +32,7 @@ body {
   position: relative;
   width: min(920px, 100%);
   margin: 0 auto;
-  padding: 78px clamp(20px, 4vw, 54px) 34px;
+  padding: 142px clamp(20px, 4vw, 54px) 34px;
   border-radius: 26px;
   background: var(--board-paper);
   box-shadow: var(--board-shadow);
@@ -44,22 +44,24 @@ body {
   left: 50%;
   display: flex;
   align-items: center;
-  gap: 16px;
-  transform: translate(-50%, -50%);
+  flex-direction: column;
+  gap: 8px;
+  width: min(360px, 70vw);
+  transform: translate(-50%, -18%);
   white-space: nowrap;
 }
 
 .brand-logo {
-  width: clamp(92px, 14vw, 132px);
-  aspect-ratio: 1;
+  width: 100%;
+  aspect-ratio: 1954 / 868;
   overflow: hidden;
-  border: 7px solid var(--board-paper);
-  border-radius: 50%;
-  background: var(--board-paper);
-  box-shadow: 0 8px 24px rgba(82, 48, 31, .2);
+  border: 6px solid var(--board-paper);
+  border-radius: 16px;
+  background: #861d38;
+  box-shadow: 0 10px 28px rgba(82, 48, 31, .24);
 }
 .brand-logo img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.brand-copy { text-align: left; }
+.brand-copy { text-align: center; }
 .brand-kicker {
   margin: 0 0 4px;
   color: var(--board-muted);
@@ -71,7 +73,7 @@ body {
   margin: 0;
   color: var(--board-red);
   font-family: "Noto Serif SC", "Songti SC", serif;
-  font-size: clamp(30px, 5vw, 50px);
+  font-size: clamp(27px, 4vw, 42px);
   line-height: 1;
   letter-spacing: .1em;
 }
@@ -128,11 +130,11 @@ body {
 
 @media (max-width: 640px) {
   .gold-price-board { padding: 76px 10px 20px; }
-  .board-shell { padding: 64px 12px 22px; border-radius: 20px; }
-  .brand-mark { gap: 10px; }
-  .brand-logo { border-width: 5px; }
+  .board-shell { padding: 112px 12px 22px; border-radius: 20px; }
+  .brand-mark { top: -2px; width: min(300px, 82vw); gap: 6px; transform: translate(-50%, -8%); }
+  .brand-logo { border-width: 5px; border-radius: 12px; }
   .brand-kicker { font-size: 8px; }
-  .brand-copy h1 { font-size: 31px; }
+  .brand-copy h1 { font-size: 28px; }
   .brand-copy p:last-child { margin-top: 5px; font-size: 11px; letter-spacing: .1em; }
   .board-rule { margin-bottom: 20px; }
   .board-intro { align-items: start; flex-direction: column; gap: 7px; }
