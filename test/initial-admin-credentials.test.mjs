@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createMemoryStore } from '../cloud-functions/api/_shared/store.js';
-import { ensureBootstrapAdmin, hashPassword, USERS_KEY } from '../cloud-functions/api/_shared/auth.js';
+import { createSessionCookie, ensureBootstrapAdmin, hashPassword, USERS_KEY } from '../cloud-functions/api/_shared/auth.js';
 import { onRequestPost as login } from '../cloud-functions/api/admin/login.js';
 import { onRequestPost as changeCredentials } from '../cloud-functions/api/admin/password.js';
 import { onRequestGet as readPrices } from '../cloud-functions/api/admin/prices.js';
@@ -98,4 +98,20 @@ test('bootstrap migration preserves an already configured account and password',
     await ensureBootstrapAdmin(store, { username: 'admin', password: '123456' });
     assert.deepEqual(store.snapshot()[USERS_KEY][0], original);
   }
+});
+
+test('an existing initial-login session also requires changing the username after deployment', async () => {
+  const store = createMemoryStore({ [USERS_KEY]: [{
+    id: 'admin', username: 'XBZJ001', role: 'admin', active: true,
+    forcePasswordChange: true, passwordHash: await hashPassword('123456'),
+  }] });
+  const token = await createSessionCookie({ userId: 'admin', role: 'admin', passwordChangeOnly: true }, env.AUTH_SECRET);
+  const cookie = 'zhonghui_session=' + token;
+  const session = await me({ request: request('me', null, cookie), store, env });
+  assert.equal((await session.json()).data.user.forceUsernameChange, true);
+  const changed = await changeCredentials({
+    request: request('password', { current_password: '123456', new_password: 'Owner12345' }, cookie), store, env,
+  });
+  assert.equal(changed.status, 400);
+  assert.equal(store.snapshot()[USERS_KEY][0].forcePasswordChange, true);
 });

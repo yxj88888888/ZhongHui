@@ -25,12 +25,12 @@ export async function onRequestPost(context = {}) {
       throw new HttpError(400, '当前密码错误', 'invalid_current_password');
     }
     const previousUsername = record.username;
-    if (record.forceUsernameChange) {
+    if (record.forceUsernameChange || user.forceUsernameChange) {
       const username = String(body.new_username || '').trim();
       if (!/^[A-Za-z0-9_-]{3,32}$/.test(username)) {
         throw new HttpError(400, '新账号需为 3-32 位字母、数字、下划线或短横线', 'invalid_username');
       }
-      if (username === record.username) {
+      if (username === record.username || username === 'admin') {
         throw new HttpError(400, '新账号不能与初始账号相同', 'unchanged_username');
       }
       if (users.some((item) => item.id !== record.id && item.username === username)) {

@@ -153,7 +153,10 @@ export async function getSessionUser(request, store, secret, now = Date.now()) {
   const users = await readJson(store, USERS_KEY, []);
   const user = users.find((item) => item.id === claims.userId && item.active !== false);
   if (!user || user.role !== claims.role) return null;
-  return { ...user, passwordHash: undefined, passwordChangeOnly: claims.passwordChangeOnly === true };
+  const forceUsernameChange = user.forceUsernameChange === true ||
+    (user.id === 'admin' && user.role === 'admin' && user.forcePasswordChange === true &&
+      ['admin', 'XBZJ001'].includes(user.username));
+  return { ...user, forceUsernameChange, passwordHash: undefined, passwordChangeOnly: claims.passwordChangeOnly === true };
 }
 
 export function requireCapability(user, capability) {
