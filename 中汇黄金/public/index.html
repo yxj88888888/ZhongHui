@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#eee3d1">
   <title>中汇黄金 · 今日金价</title>
-  <link rel="stylesheet" href="css/style.css?v=zhonghui-logo-20261007">
+  <link rel="stylesheet" href="css/style.css?v=zhonghui-compact-header-20261007">
 </head>
 <body>
   <main class="gold-price-board" id="gold-price-board">
@@ -13,6 +13,10 @@
       <header class="brand-mark">
         <div class="brand-logo" aria-label="中汇黄金">
           <img src="images/zhonghui-logo.jpg" alt="中汇黄金 Logo" width="1280" height="1280">
+        </div>
+        <div class="board-heading">
+          <h1 id="board-title">今日金价</h1>
+          <div class="title-rule" aria-hidden="true"></div>
         </div>
         <div class="qr-block">
           <a class="qr-code" href="images/zhonghui-wechat.png" target="_blank" rel="noopener" aria-label="查看中汇黄金微信二维码原图">
@@ -23,8 +27,6 @@
       </header>
 
       <div class="board-rule" aria-hidden="true"></div>
-      <h1 id="board-title">今日金价</h1>
-      <div class="title-rule" aria-hidden="true"></div>
 
       <div class="table-wrap">
         <table class="gold-price-table">
@@ -37,7 +39,7 @@
           </thead>
           <tbody>
             <tr data-price-id="jewelry_gold">
-              <th scope="row">首饰金</th>
+              <th scope="row">首饰金<small class="category-fee">工费另计</small></th>
               <td><span data-price-field="sell">--</span><small>元/克</small></td>
               <td><span data-price-field="recycle">--</span><small>元/克</small></td>
             </tr>
