@@ -3,7 +3,7 @@ const path = require('path');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8');
 
-if (!html.includes('css/style.css?v=zhonghui-ivory-20261007')) {
+if (!html.includes('css/style.css?v=zhonghui-logo-20261007')) {
   throw new Error('Expected fixed price board stylesheet URL to be cache-busted');
 }
 if (!html.includes('js/app.js?v=zhonghui-ivory-20261007')) {

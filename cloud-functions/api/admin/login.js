@@ -11,7 +11,7 @@ export async function onRequestPost(context = {}) {
     if (!env.AUTH_SECRET) throw new HttpError(503, '后台安全配置未完成', 'auth_not_configured');
     const body = await parseJson(request);
     const bootstrap = await ensureBootstrapAdmin(store, {
-      username: env.INITIAL_ADMIN_USERNAME || 'XBZJ001',
+      username: env.INITIAL_ADMIN_USERNAME || 'admin',
       password: env.INITIAL_ADMIN_PASSWORD,
     });
     const users = await readJson(store, USERS_KEY, [bootstrap]);
@@ -27,7 +27,7 @@ export async function onRequestPost(context = {}) {
     const token = await createSessionCookie({
       userId: user.id,
       role: user.role,
-      passwordChangeOnly: user.forcePasswordChange === true,
+      passwordChangeOnly: user.forcePasswordChange === true || user.forceUsernameChange === true,
     }, env.AUTH_SECRET);
     const headers = new Headers();
     setSessionCookie(headers, token);
@@ -35,7 +35,7 @@ export async function onRequestPost(context = {}) {
       code: 1,
       data: {
         user: publicUser(user),
-        forcePasswordChange: user.forcePasswordChange === true,
+        forcePasswordChange: user.forcePasswordChange === true || user.forceUsernameChange === true,
       },
     }, 200, Object.fromEntries(headers.entries()));
   } catch (error) {

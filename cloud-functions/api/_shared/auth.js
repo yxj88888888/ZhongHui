@@ -113,7 +113,19 @@ export async function readSessionCookie(cookie, secret, now = Date.now()) {
 
 export async function ensureBootstrapAdmin(store, { username, password }) {
   const users = await readJson(store, USERS_KEY, []);
-  if (users.length > 0) return users.find((user) => user.role === 'admin') || users[0];
+  if (users.length > 0) {
+    const admin = users.find((user) => user.role === 'admin') || users[0];
+    if (username === 'admin' && admin.id === 'admin' && admin.role === 'admin' &&
+        ['XBZJ001', 'admin'].includes(admin.username) && admin.forcePasswordChange === true &&
+        (admin.username !== 'admin' || admin.forceUsernameChange !== true) &&
+        await verifyPassword(password, admin.passwordHash)) {
+      admin.username = 'admin';
+      admin.forceUsernameChange = true;
+      admin.updatedAt = new Date().toISOString();
+      await writeJson(store, USERS_KEY, users);
+    }
+    return admin;
+  }
   if (!username || !password) throw new Error('initial administrator credentials are not configured');
   const now = new Date().toISOString();
   const admin = {
@@ -122,6 +134,7 @@ export async function ensureBootstrapAdmin(store, { username, password }) {
     role: 'admin',
     passwordHash: await hashPassword(password),
     forcePasswordChange: true,
+    forceUsernameChange: true,
     active: true,
     createdAt: now,
     updatedAt: now,

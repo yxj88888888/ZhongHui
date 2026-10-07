@@ -30,6 +30,17 @@ function showLogin() {
 }
 
 function showPasswordChange() {
+  const changeUsername = state.user?.forceUsernameChange === true;
+  const usernameField = $('#new-username-field');
+  const usernameInput = usernameField.querySelector('input');
+  usernameField.classList.toggle('is-hidden', !changeUsername);
+  usernameInput.disabled = !changeUsername;
+  usernameInput.required = changeUsername;
+  $('#first-login-title').textContent = changeUsername ? '请先修改初始账号和密码' : '请先修改初始密码';
+  $('#first-login-hint').textContent = changeUsername
+    ? '首次登录必须设置新账号及新密码，完成后才能使用后台。新账号为 3-32 位字母、数字、下划线或短横线；新密码至少 8 位且包含字母和数字。'
+    : '首次登录必须设置新密码，完成后才能使用后台。新密码至少 8 位且包含字母和数字。';
+  $('#save-credentials').textContent = changeUsername ? '保存账号和密码' : '保存新密码';
   $('#admin-login')?.classList.add('is-hidden');
   $('#force-password-change')?.classList.remove('is-hidden');
   $('#admin-app')?.classList.add('is-hidden');
@@ -107,6 +118,10 @@ async function loadApp() {
   const me = await api('/api/admin/me');
   state.user = me.user;
   state.capabilities = me.capabilities || {};
+  if (state.user.forcePasswordChange || state.user.forceUsernameChange || state.user.passwordChangeOnly) {
+    showPasswordChange();
+    return;
+  }
   showApp();
   await loadPrices();
   await Promise.all([loadUsers(), loadAudit()]);
@@ -137,9 +152,10 @@ async function submitPassword(form, messageSelector) {
     body: JSON.stringify({
       current_password: data.get('current_password'),
       new_password: data.get('new_password'),
+      new_username: data.get('new_username') || undefined,
     }),
   });
-  setMessage(messageSelector, '密码已更新', false);
+  setMessage(messageSelector, '登录信息已更新', false);
 }
 
 $('#force-password-form')?.addEventListener('submit', async (event) => {

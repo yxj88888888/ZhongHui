@@ -57,15 +57,16 @@ body {
 
 .brand-mark { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand-logo {
-  width: clamp(180px, 32vw, 280px);
-  padding: 12px 16px;
+  width: clamp(110px, 24vw, 160px);
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
   border: 1px solid var(--board-gold);
   background: var(--board-ivory);
   box-shadow: inset 0 0 0 2px var(--board-paper), 0 4px 8px #8060391a;
 }
-/* Crop the supplied image in CSS; keep the original brand and QR pixels intact. */
-.brand-wordmark { position: relative; width: 100%; aspect-ratio: 3; overflow: hidden; mix-blend-mode: multiply; }
-.brand-wordmark img { position: absolute; display: block; width: 383.81%; height: auto; max-width: none; left: -90.48%; top: -54.29%; }
+.brand-logo img { display: block; width: 100%; height: auto; }
+/* Show the QR region while keeping the original image intact. */
 .qr-block { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .qr-code { position: relative; display: block; width: 128px; aspect-ratio: 1; overflow: hidden; background: #fff; border: 1px solid var(--board-line); }
 .qr-block img { position: absolute; width: 129.58%; max-width: none; height: auto; left: -15.43%; top: -48.87%; }
@@ -126,7 +127,7 @@ h1 {
   .gold-price-board { padding: 18px 10px 28px; }
   .board-shell { padding: 23px 12px 20px; border-radius: 20px; }
   .brand-mark { gap: 12px; }
-  .brand-logo { width: min(190px, 64%); padding: 8px; }
+  .brand-logo { width: 110px; }
   .qr-code { width: clamp(80px, 21vw, 108px); }
   .qr-block { gap: 5px; }
   .qr-block span { font-size: 11px; }
@@ -146,7 +147,7 @@ h1 {
 @media (min-width: 1000px) and (min-aspect-ratio: 4/3) {
   .gold-price-board { padding: 20px 28px 30px; }
   .board-shell { width: min(1200px, 100%); padding: 22px 32px; }
-  .brand-logo { width: 240px; padding: 6px 12px; }
+  .brand-logo { width: 128px; }
   .qr-code { width: 88px; }
   .qr-block { gap: 4px; }
   .qr-block span { font-size: 12px; }
