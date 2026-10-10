@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "https://www.zhonghui.online/admin/",
+      "statusCode": 301
+    }
+  ]
+}

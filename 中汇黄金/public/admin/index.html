@@ -3,8 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script>
+    (() => {
+      const target = new URL(window.location.href);
+      if (target.hostname === 'www.zhonghui.online') target.protocol = 'https:';
+      if (target.pathname === '/admin' || target.pathname === '/admin/index.html') target.pathname = '/admin/';
+      if (target.href !== window.location.href) window.location.replace(target.href);
+    })();
+  </script>
   <title>中汇黄金 · 价格后台</title>
-  <link rel="stylesheet" href="admin.css?v=fixed-price-admin-20260923">
+  <link rel="stylesheet" href="/admin/admin.css?v=fixed-price-admin-20260923">
 </head>
 <body>
   <main class="admin-shell">
@@ -92,6 +100,6 @@
       </section>
     </section>
   </main>
-  <script src="admin.js?v=initial-credentials-20261007"></script>
+  <script src="/admin/admin.js?v=initial-credentials-20261007"></script>
 </body>
 </html>
