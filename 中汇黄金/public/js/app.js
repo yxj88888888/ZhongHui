@@ -6,35 +6,39 @@ function setStatus(message, isError = false) {
   if (!priceStatus) return;
   priceStatus.textContent = message;
   priceStatus.classList.toggle('is-error', isError);
-  priceStatus.hidden = !isError;
+}
+
+function renderDigits(element, value) {
+  if (!element) return;
+  const text = String(value ?? '--').replace(/(\.\d*?[1-9])0+$|\.0+$/, '$1');
+  const count = Math.max(4, text.length);
+  element.classList.add('price-digits');
+  element.style.setProperty('--digit-count', count);
+  element.setAttribute('aria-label', text);
+  const digits = Array.from(text.padStart(count, ' '), (digit) => {
+    const span = document.createElement('span');
+    span.className = 'price-digit';
+    span.textContent = digit === ' ' ? '\u00a0' : digit;
+    span.setAttribute('aria-hidden', 'true');
+    return span;
+  });
+  element.replaceChildren(...digits);
 }
 
 function updateRow(row, price) {
-  const value = Number(price[row.dataset.priceKey]);
-  const text = value.toFixed(2).replace(/\.?0+$/, '');
-  const digits = row.querySelector('.price-digits');
-  const characters = text.padStart(4, ' ').split('');
-  digits.replaceChildren(...characters.map((character) => {
-    const cell = document.createElement('span');
-    cell.textContent = character === ' ' ? '\u00a0' : character;
-    cell.setAttribute('aria-hidden', 'true');
-    return cell;
-  }));
-  digits.style.setProperty('--digit-count', characters.length);
-  digits.setAttribute('aria-label', text + ' 元/克');
+  const sell = row.querySelector('[data-price-field="sell"]');
+  const recycle = row.querySelector('[data-price-field="recycle"]');
+  renderDigits(sell, price.sell_price);
+  renderDigits(recycle, price.recycle_price);
 }
 
 function renderPrices(payload) {
   const prices = Array.isArray(payload?.prices) ? payload.prices : [];
   const priceMap = new Map(prices.map((price) => [price.id, price]));
-  const rows = [...document.querySelectorAll('[data-price-id]')];
-  rows.forEach((row) => {
-    const value = priceMap.get(row.dataset.priceId)?.[row.dataset.priceKey];
-    if (value == null || value === '' || !Number.isFinite(Number(value)) || Number(value) <= 0) {
-      throw new Error('价格数据不完整');
-    }
+  document.querySelectorAll('[data-price-id]').forEach((row) => {
+    const price = priceMap.get(row.dataset.priceId);
+    if (price) updateRow(row, price);
   });
-  rows.forEach((row) => updateRow(row, priceMap.get(row.dataset.priceId)));
   if (updatedAt) updatedAt.textContent = payload?.update_time || '--';
 }
 

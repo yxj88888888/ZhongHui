@@ -33,8 +33,8 @@ export async function authenticated(context, capability, options = {}) {
   if (!env.AUTH_SECRET) throw new HttpError(503, '后台安全配置未完成', 'auth_not_configured');
   const user = await getSessionUser(getRequest(context), store, env.AUTH_SECRET);
   if (!user) throw new HttpError(401, '登录状态已失效', 'unauthorized');
-  if (user.passwordChangeOnly && !options.allowPasswordChange) {
-    throw new HttpError(403, '请先修改初始密码', 'password_change_required');
+  if ((user.passwordChangeOnly || user.forcePasswordChange || user.forceUsernameChange) && !options.allowPasswordChange) {
+    throw new HttpError(403, '请先修改初始账号和密码', 'password_change_required');
   }
   requireCapability(user, capability);
   return { store, env, user };
@@ -47,6 +47,7 @@ export function publicUser(user) {
     role: user.role,
     active: user.active !== false,
     forcePasswordChange: user.forcePasswordChange === true,
+    forceUsernameChange: user.forceUsernameChange === true,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     lastLoginAt: user.lastLoginAt || null,

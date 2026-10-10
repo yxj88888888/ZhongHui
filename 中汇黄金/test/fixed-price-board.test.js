@@ -8,19 +8,21 @@ const app = fs.readFileSync(path.join(root, 'public', 'js', 'app.js'), 'utf8');
 
 for (const marker of [
   'gold-price-board',
-  'price-rows',
+  'gold-price-table',
   'data-price-id="jewelry_gold"',
+  'data-price-id="non_member_bar"',
+  'data-price-id="member_bar"',
   'data-price-id="platinum"',
   'data-price-id="silver"',
 ]) {
   if (!html.includes(marker)) throw new Error('Missing fixed price board marker: ' + marker);
 }
 
-if (!html.includes('images/western-zhengji-logo.jpg') || !html.includes('images/western-zhengji-qr.png')) {
-  throw new Error('Expected new Western Zheng Ji logo and QR assets');
+if (!html.includes('images/zhonghui-wechat.png') || !html.includes('中汇黄金')) {
+  throw new Error('Expected ZhongHui brand and original QR asset');
 }
-if (!css.includes('--board-gold') || !css.includes('.price-digits')) {
-  throw new Error('Expected black-gold digit board styling');
+if (!css.includes('--board-paper: #f8f0e1') || !css.includes('--board-wine: #76172b') || !css.includes('.gold-price-table')) {
+  throw new Error('Expected ivory and burgundy table styling');
 }
 if (!css.includes('@media (max-width: 640px)')) {
   throw new Error('Expected mobile fixed price board styles');

@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>西部郑记 · 价格后台</title>
+  <title>中汇黄金 · 价格后台</title>
   <link rel="stylesheet" href="admin.css?v=fixed-price-admin-20260923">
 </head>
 <body>
   <main class="admin-shell">
     <section class="admin-card admin-login" id="admin-login">
       <div class="admin-brand">
-        <span class="admin-mark">西部</span>
-        <div><strong>西部郑记</strong><small>价格后台</small></div>
+        <span class="admin-mark">中汇</span>
+        <div><strong>中汇黄金</strong><small>价格后台</small></div>
       </div>
       <p class="admin-kicker">SECURE CONTROL ROOM</p>
       <h1>登录后台</h1>
@@ -26,13 +26,14 @@
 
     <section class="admin-card admin-password-card is-hidden" id="force-password-change">
       <p class="admin-kicker">FIRST LOGIN</p>
-      <h1>请先修改初始密码</h1>
-      <p class="admin-muted">为了账号安全，首次登录必须设置新的密码。</p>
+      <h1 id="first-login-title">请先修改初始账号和密码</h1>
+      <p class="admin-muted" id="first-login-hint">首次登录必须设置新账号及新密码，完成后才能使用后台。新账号为 3-32 位字母、数字、下划线或短横线；新密码至少 8 位且包含字母和数字。</p>
       <form id="force-password-form" class="admin-form">
+        <label id="new-username-field">新账号<input name="new_username" autocomplete="username" minlength="3" maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" required></label>
         <label>当前密码<input name="current_password" type="password" required></label>
-        <label>新密码<input name="new_password" type="password" minlength="8" required></label>
-        <label>确认新密码<input name="confirm_password" type="password" minlength="8" required></label>
-        <button class="admin-primary" type="submit">保存新密码</button>
+        <label>新密码<input name="new_password" type="password" autocomplete="new-password" minlength="8" required></label>
+        <label>确认新密码<input name="confirm_password" type="password" autocomplete="new-password" minlength="8" required></label>
+        <button class="admin-primary" id="save-credentials" type="submit">保存账号和密码</button>
       </form>
       <p class="admin-message" id="force-password-message" role="alert"></p>
     </section>
@@ -40,8 +41,8 @@
     <section class="admin-app is-hidden" id="admin-app">
       <header class="admin-topbar">
         <div class="admin-brand">
-          <span class="admin-mark">西部</span>
-          <div><strong>西部郑记</strong><small>价格控制台</small></div>
+          <span class="admin-mark">中汇</span>
+          <div><strong>中汇黄金</strong><small>价格控制台</small></div>
         </div>
         <div class="admin-session">
           <span id="session-user">--</span>
@@ -91,6 +92,6 @@
       </section>
     </section>
   </main>
-  <script src="admin.js?v=fixed-price-admin-20260923"></script>
+  <script src="admin.js?v=initial-credentials-20261007"></script>
 </body>
 </html>
