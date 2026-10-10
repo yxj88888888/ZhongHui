@@ -4,8 +4,10 @@
 
 ## 公开页和后台
 
-- 公开页：https://sxyxerp.online/
-- 管理后台：https://sxyxerp.online/admin/
+- 公开页：https://www.zhonghui.online/
+- 管理后台：https://www.zhonghui.online/admin/
+
+本仓库只用于中汇。西部郑记 sxyxerp.online 已有独立仓库 WesternZhengJi 和独立 EdgeOne 项目，发布配置见 docs/production-boundary.md。
 - 初始管理员：admin
 - 初始密码：123456
 
