@@ -8,10 +8,8 @@ const app = fs.readFileSync(path.join(root, 'public', 'js', 'app.js'), 'utf8');
 
 for (const marker of [
   'gold-price-board',
-  'gold-price-table',
+  'price-rows',
   'data-price-id="jewelry_gold"',
-  'data-price-id="non_member_bar"',
-  'data-price-id="member_bar"',
   'data-price-id="platinum"',
   'data-price-id="silver"',
 ]) {
@@ -21,8 +19,8 @@ for (const marker of [
 if (!html.includes('images/western-zhengji-logo.jpg') || !html.includes('images/western-zhengji-qr.png')) {
   throw new Error('Expected new Western Zheng Ji logo and QR assets');
 }
-if (!css.includes('--board-brown: #cf9f79') || !css.includes('.gold-price-table')) {
-  throw new Error('Expected warm-brown table styling');
+if (!css.includes('--board-gold') || !css.includes('.price-digits')) {
+  throw new Error('Expected black-gold digit board styling');
 }
 if (!css.includes('@media (max-width: 640px)')) {
   throw new Error('Expected mobile fixed price board styles');

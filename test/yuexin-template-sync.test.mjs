@@ -13,10 +13,12 @@ const [html, css, app, adminHtml, adminCss, adminJs] = await Promise.all([
 
 for (const marker of [
   'gold-price-board',
-  'gold-price-table',
+  'price-rows',
+  '足金',
+  '足银',
+  '回收价',
+  '工费另计',
   'data-price-id="jewelry_gold"',
-  'data-price-id="non_member_bar"',
-  'data-price-id="member_bar"',
   'data-price-id="platinum"',
   'data-price-id="silver"',
   '更新时间',
@@ -26,7 +28,7 @@ for (const marker of [
 }
 
 assert.ok(!html.includes('href="/admin"'), 'public page must not expose an admin link');
-assert.ok(/#cf9f79|--board-brown|--warm-brown/.test(css), 'missing Shuibei warm-brown palette');
+assert.ok(css.includes('--board-gold') && css.includes('--board-dark'), 'missing black-gold palette');
 assert.ok(/border-radius:\s*(1[2-9]|[2-9][0-9])px/.test(css), 'missing rounded price board');
 assert.ok(/@media\s*\(max-width:\s*640px\)/.test(css), 'missing mobile price board breakpoint');
 assert.ok(app.includes("fetch('/api/gold/current'"), 'public page must use fixed gold API');

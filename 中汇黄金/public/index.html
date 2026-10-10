@@ -3,61 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#cf9f79">
+  <meta name="theme-color" content="#202121">
   <title>西部郑记 · 贵金属价格</title>
-  <link rel="stylesheet" href="css/style.css?v=fixed-price-board-20260923">
+  <link rel="stylesheet" href="css/style.css?v=black-gold-board-20261010">
 </head>
 <body>
   <main class="gold-price-board" id="gold-price-board">
     <section class="board-shell" aria-label="西部郑记贵金属价格">
-      <header class="brand-mark">
-        <div class="brand-logo">
-          <img src="images/western-zhengji-logo.jpg" alt="西部郑记 Logo">
-        </div>
+      <header class="board-heading">
+        <h1>今日金价</h1>
       </header>
-
-      <div class="board-rule" aria-hidden="true"></div>
-
-      <div class="table-wrap">
-        <table class="gold-price-table">
-          <thead>
-            <tr>
-              <th scope="col">品类</th>
-              <th scope="col">今日价格</th>
-              <th scope="col">回收价格</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr data-price-id="jewelry_gold">
-              <th scope="row">首饰金</th>
-              <td><span data-price-field="sell">--</span><small>元/克</small></td>
-              <td><span data-price-field="recycle">--</span><small>元/克</small></td>
-            </tr>
-            <tr data-price-id="non_member_bar">
-              <th scope="row">非会员金条</th>
-              <td><span data-price-field="sell">--</span><small>元/克</small></td>
-              <td><span data-price-field="recycle">--</span><small>元/克</small></td>
-            </tr>
-            <tr data-price-id="member_bar">
-              <th scope="row">会员金条</th>
-              <td><span data-price-field="sell">--</span><small>元/克</small></td>
-              <td><span data-price-field="recycle">--</span><small>元/克</small></td>
-            </tr>
-            <tr data-price-id="platinum">
-              <th scope="row">铂金</th>
-              <td><span data-price-field="sell">--</span><small>元/克</small></td>
-              <td><span data-price-field="recycle">--</span><small>元/克</small></td>
-            </tr>
-            <tr data-price-id="silver">
-              <th scope="row">白银</th>
-              <td><span data-price-field="sell">--</span><small>元/克</small></td>
-              <td><span data-price-field="recycle">--</span><small>元/克</small></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="price-rows" aria-label="贵金属报价">
+        <section class="price-row" data-price-id="jewelry_gold" data-price-key="sell_price" aria-label="足金售价">
+          <h2>足金</h2>
+          <div class="price-digits" aria-label="价格加载中"><span>–</span><span>–</span><span>–</span><span>–</span></div>
+          <div class="price-unit"><strong>元/克</strong><span>工费另计</span></div>
+        </section>
+        <section class="price-row" data-price-id="silver" data-price-key="sell_price" aria-label="足银售价">
+          <h2>足银</h2>
+          <div class="price-digits" aria-label="价格加载中"><span>–</span><span>–</span><span>–</span><span>–</span></div>
+          <div class="price-unit"><strong>元/克</strong><span>工费另计</span></div>
+        </section>
+        <section class="price-row" data-price-id="platinum" data-price-key="sell_price" aria-label="铂金售价">
+          <h2>铂金</h2>
+          <div class="price-digits" aria-label="价格加载中"><span>–</span><span>–</span><span>–</span><span>–</span></div>
+          <div class="price-unit"><strong>元/克</strong><span>工费另计</span></div>
+        </section>
+        <section class="price-row" data-price-id="jewelry_gold" data-price-key="recycle_price" aria-label="黄金回收价">
+          <h2>回收价</h2>
+          <div class="price-digits" aria-label="价格加载中"><span>–</span><span>–</span><span>–</span><span>–</span></div>
+          <div class="price-unit"><strong>元/克</strong></div>
+        </section>
       </div>
-
+      <p id="price-status" class="price-status" role="status" hidden></p>
+      <div class="board-notice">
+        <p>更新时间：<time id="updated-at">--</time></p>
+        <p>注：此价格仅供参考，实际价格以实际交易为准。</p>
+        <small>贵金属投资不做非实物交易</small>
+      </div>
       <footer class="board-footer">
+        <img class="store-logo" src="images/western-zhengji-logo.jpg" alt="西部郑记 Logo">
         <div class="qr-block">
           <img src="images/western-zhengji-qr.png" alt="西部郑记店铺微信二维码">
           <div>
@@ -65,14 +50,9 @@
             <span>了解实时行情</span>
           </div>
         </div>
-        <div class="board-notice">
-          <p>更新时间：<time id="updated-at">--</time></p>
-          <p>贵金属投资不做非实物交易</p>
-          <small>金价随市场波动，具体以门店成交价为准</small>
-        </div>
       </footer>
     </section>
   </main>
-  <script src="js/app.js?v=fixed-price-board-20260923"></script>
+  <script src="js/app.js?v=black-gold-board-20261010"></script>
 </body>
 </html>
