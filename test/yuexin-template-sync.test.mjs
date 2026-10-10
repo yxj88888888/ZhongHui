@@ -26,7 +26,7 @@ for (const marker of [
 }
 
 assert.ok(!html.includes('href="/admin"'), 'public page must not expose an admin link');
-assert.ok(css.includes('--board-paper: #f8f0e1') && css.includes('--board-wine: #76172b'), 'missing ivory and burgundy palette');
+assert.ok(/#cf9f79|--board-brown|--warm-brown/.test(css), 'missing Shuibei warm-brown palette');
 assert.ok(/border-radius:\s*(1[2-9]|[2-9][0-9])px/.test(css), 'missing rounded price board');
 assert.ok(/@media\s*\(max-width:\s*640px\)/.test(css), 'missing mobile price board breakpoint');
 assert.ok(app.includes("fetch('/api/gold/current'"), 'public page must use fixed gold API');

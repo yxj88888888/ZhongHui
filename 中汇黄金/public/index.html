@@ -3,26 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#eee3d1">
-  <title>中汇黄金 · 今日金价</title>
-  <link rel="stylesheet" href="css/style.css?v=zhonghui-compact-header-20261007">
+  <meta name="theme-color" content="#cf9f79">
+  <title>西部郑记 · 贵金属价格</title>
+  <link rel="stylesheet" href="css/style.css?v=fixed-price-board-20260923">
 </head>
 <body>
   <main class="gold-price-board" id="gold-price-board">
-    <section class="board-shell" aria-labelledby="board-title">
+    <section class="board-shell" aria-label="西部郑记贵金属价格">
       <header class="brand-mark">
-        <div class="brand-logo" aria-label="中汇黄金">
-          <img src="images/zhonghui-logo.jpg" alt="中汇黄金 Logo" width="1280" height="1280">
-        </div>
-        <div class="board-heading">
-          <h1 id="board-title">今日金价</h1>
-          <div class="title-rule" aria-hidden="true"></div>
-        </div>
-        <div class="qr-block">
-          <a class="qr-code" href="images/zhonghui-wechat.png" target="_blank" rel="noopener" aria-label="查看中汇黄金微信二维码原图">
-            <img src="images/zhonghui-wechat.png" alt="中汇黄金店铺微信二维码" width="806" height="922">
-          </a>
-          <span>扫码关注</span>
+        <div class="brand-logo">
+          <img src="images/western-zhengji-logo.jpg" alt="西部郑记 Logo">
         </div>
       </header>
 
@@ -39,7 +29,7 @@
           </thead>
           <tbody>
             <tr data-price-id="jewelry_gold">
-              <th scope="row">首饰金<small class="category-fee">工费另计</small></th>
+              <th scope="row">首饰金</th>
               <td><span data-price-field="sell">--</span><small>元/克</small></td>
               <td><span data-price-field="recycle">--</span><small>元/克</small></td>
             </tr>
@@ -68,15 +58,21 @@
       </div>
 
       <footer class="board-footer">
-        <div class="board-notice">
-          <p>注：此价格仅供参考，实际价格以门店成交价为准。</p>
-          <small>贵金属投资不做非实物交易</small>
+        <div class="qr-block">
+          <img src="images/western-zhengji-qr.png" alt="西部郑记店铺微信二维码">
+          <div>
+            <strong>关注西部郑记</strong>
+            <span>了解实时行情</span>
+          </div>
         </div>
-        <p class="board-update">更新时间：<time id="updated-at">--</time></p>
-        <p class="board-status" id="price-status" role="status" aria-live="polite"></p>
+        <div class="board-notice">
+          <p>更新时间：<time id="updated-at">--</time></p>
+          <p>贵金属投资不做非实物交易</p>
+          <small>金价随市场波动，具体以门店成交价为准</small>
+        </div>
       </footer>
     </section>
   </main>
-  <script src="js/app.js?v=zhonghui-ivory-20261007"></script>
+  <script src="js/app.js?v=fixed-price-board-20260923"></script>
 </body>
 </html>

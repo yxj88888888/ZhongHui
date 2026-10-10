@@ -18,11 +18,11 @@ for (const marker of [
   if (!html.includes(marker)) throw new Error('Missing fixed price board marker: ' + marker);
 }
 
-if (!html.includes('images/zhonghui-wechat.png') || !html.includes('中汇黄金')) {
-  throw new Error('Expected ZhongHui brand and original QR asset');
+if (!html.includes('images/western-zhengji-logo.jpg') || !html.includes('images/western-zhengji-qr.png')) {
+  throw new Error('Expected new Western Zheng Ji logo and QR assets');
 }
-if (!css.includes('--board-paper: #f8f0e1') || !css.includes('--board-wine: #76172b') || !css.includes('.gold-price-table')) {
-  throw new Error('Expected ivory and burgundy table styling');
+if (!css.includes('--board-brown: #cf9f79') || !css.includes('.gold-price-table')) {
+  throw new Error('Expected warm-brown table styling');
 }
 if (!css.includes('@media (max-width: 640px)')) {
   throw new Error('Expected mobile fixed price board styles');

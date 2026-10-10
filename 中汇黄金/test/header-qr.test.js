@@ -4,10 +4,10 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'public', 'index.html'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'public', 'css', 'style.css'), 'utf8');
-const qrPath = path.join(root, 'public', 'images', 'zhonghui-wechat.png');
+const qrPath = path.join(root, 'public', 'images', 'western-zhengji-qr.png');
 
 if (!fs.existsSync(qrPath)) throw new Error('Expected store WeChat QR image');
-for (const marker of ['qr-block', 'images/zhonghui-wechat.png', '扫码关注', '查看中汇黄金微信二维码原图']) {
+for (const marker of ['qr-block', 'images/western-zhengji-qr.png', '关注西部郑记', '了解实时行情']) {
   if (!html.includes(marker)) throw new Error('Missing QR marker: ' + marker);
 }
 if (!css.includes('.qr-block') || !css.includes('.qr-block img')) {

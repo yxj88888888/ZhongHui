@@ -8,28 +8,11 @@ function setStatus(message, isError = false) {
   priceStatus.classList.toggle('is-error', isError);
 }
 
-function renderDigits(element, value) {
-  if (!element) return;
-  const text = String(value ?? '--').replace(/(\.\d*?[1-9])0+$|\.0+$/, '$1');
-  const count = Math.max(4, text.length);
-  element.classList.add('price-digits');
-  element.style.setProperty('--digit-count', count);
-  element.setAttribute('aria-label', text);
-  const digits = Array.from(text.padStart(count, ' '), (digit) => {
-    const span = document.createElement('span');
-    span.className = 'price-digit';
-    span.textContent = digit === ' ' ? '\u00a0' : digit;
-    span.setAttribute('aria-hidden', 'true');
-    return span;
-  });
-  element.replaceChildren(...digits);
-}
-
 function updateRow(row, price) {
   const sell = row.querySelector('[data-price-field="sell"]');
   const recycle = row.querySelector('[data-price-field="recycle"]');
-  renderDigits(sell, price.sell_price);
-  renderDigits(recycle, price.recycle_price);
+  if (sell) sell.textContent = price.sell_price ?? '--';
+  if (recycle) recycle.textContent = price.recycle_price ?? '--';
 }
 
 function renderPrices(payload) {

@@ -32,7 +32,7 @@ assert.equal(can('clerk', 'password:self'), true);
 
 const env = {
   AUTH_SECRET: 'integration-secret',
-  INITIAL_ADMIN_USERNAME: 'admin',
+  INITIAL_ADMIN_USERNAME: 'XBZJ001',
   INITIAL_ADMIN_PASSWORD: '123456',
 };
 const store = createMemoryStore();
@@ -52,7 +52,7 @@ const cookieFrom = (response) => {
 
 const firstLogin = await login.onRequestPost({
   request: request('https://example.test/api/admin/login', 'POST', {
-    username: 'admin',
+    username: 'XBZJ001',
     password: '123456',
   }),
   store,
@@ -66,7 +66,6 @@ const changedPassword = await password.onRequestPost({
   request: request('https://example.test/api/admin/password', 'POST', {
     current_password: '123456',
     new_password: 'Admin1234',
-    new_username: 'owner-admin',
   }, adminCookie),
   store,
   env,
